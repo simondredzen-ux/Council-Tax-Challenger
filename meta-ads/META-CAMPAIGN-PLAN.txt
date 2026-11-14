@@ -1,0 +1,97 @@
+CHALLENGE MANSION TAX: META ADS 7-DAY TEST (FOR APPROVAL, NOT PUBLISHED)
+Prepared 14 Nov 2026. Nothing has been created in Meta and no money has been spent.
+
+1. CAMPAIGN
+Name:            CMT - Meta test - Nov26 - Leads
+Objective:       Leads
+Conversion:      Website
+Pixel / event:   2104372500283712 / Lead (fires on the thanks page after a successful sign-up, consent given)
+Performance goal: Maximise number of conversions
+Special Ad Category: Housing (see section 4). Country: United Kingdom.
+Budget:          LIFETIME budget GBP 35 (= GBP 5/day x 7), with an end date. A lifetime budget is a hard cap.
+                 A daily budget can overspend on individual days.
+Schedule:        7 days from the approved start date (e.g. Mon 00:00 to Sun 23:59, UK time)
+Attribution:     7-day click, 1-day view (Meta default)
+
+2. AD SET / AUDIENCE (within Housing-category rules)
+Location:   England (region). People living in or recently in this location. No postcode targeting (not allowed for Housing).
+Age/gender: 18-65+, all genders (fixed by the Housing category; cannot be narrowed)
+Detailed targeting: none (broad). The ad copy does the qualifying, as on Google.
+Language:   English (UK)
+Placements: manual: Facebook Feed, Instagram Feed, Facebook Stories, Instagram Stories, Instagram Reels, Facebook Reels.
+            Exclude Audience Network, Messenger and right column (low-quality clicks).
+
+3. DESTINATION AND TRACKING
+Website URL:     https://challengemansiontax.co.uk/
+URL parameters:  utm_source=facebook&utm_medium=paid_social&utm_campaign=cmt_meta_test_nov26&utm_content={{ad.name}}
+Ad names:        ad_a_awareness  /  ad_b_evidence
+What gets recorded with each lead (verified on the live site): source = facebook/cmt_meta_test_nov26/ad_a_awareness/hero
+Display link:    ChallengeMansionTax.co.uk
+
+4. WHY "HOUSING" (and what it costs us)
+Meta requires a Special Ad Category for housing-related ads shown in the UK, and that category covers property
+appraisal/valuation-type services. Our ads are about property valuations, so declaring it is the safe choice.
+Getting the category wrong is a common cause of rejection or account restriction.
+Effect: fixed age 18-65+, all genders, no postcode targeting, limited detailed targeting, no lookalike audiences.
+We can't target high-value postcodes on Meta at all; the copy has to attract the right owners.
+Uncertain: the UK minimum radius (10 vs 15 miles) is disputed in third-party guides, but it doesn't matter
+when targeting a whole region (England).
+
+5. AD A: PROPOSED MANSION TAX AWARENESS (Simon's wording, made compliant)
+Primary text:
+  Homes in England worth £2 million or more face a new Mansion Tax from April 2028.
+
+  But what if a property has been valued too highly?
+
+  Discover what can affect a valuation, how the proposed tax works and what owners may be able to do to challenge it.
+
+  Get the FREE Mansion Tax Guide.
+Headline:     Free guide: the new Mansion Tax
+Description:  Independent. Not connected with HMRC or the VOA.
+Button:       Download
+Images:       Ad-A-awareness-feed-4x5-1080x1350.png  /  Ad-A-awareness-stories-reels-9x16-1080x1920.png
+
+6. AD B: VALUATION DIFFERENCES AND EVIDENCE
+Primary text:
+  Mansion Tax bands will be based on a home's value in April 2026. There is no sliding scale: a home valued
+  £1 over a threshold pays the whole higher charge.
+
+  Comparable sales, accurate floor area and a property's condition can all change a valuation, and the evidence
+  is easiest to gather now.
+
+  Our free 5-page guide explains the bands, the key dates and which evidence is worth keeping.
+Headline:     Valuations differ. Evidence counts.
+Description:  Free guide by Simon Dredzen, 20+ years in prime London property.
+Button:       Download
+Images:       Ad-B-evidence-feed-4x5-1080x1350.png  /  Ad-B-evidence-stories-reels-9x16-1080x1920.png
+
+7. POLICY CHECK (Claude's review, not a Meta ruling)
+- No "you/your" tied to wealth, home ownership or tax status (personal attributes policy). Simon's original
+  "Is your home worth over £2 million? You could face..." was reworded for this reason.
+- Facts match gov.uk: England, £2m+, April 2026 values, from April 2028, £2,500 first band.
+  (£7,500 is not used: not confirmed in our gov.uk check.)
+- No guaranteed outcomes, no "save £X" promises, no implied government affiliation (independence stated).
+- Images: 1080x1350 (4:5 feed) and 1080x1920 (9:16 stories/reels), PNG, text kept clear of the top/bottom 14%
+  of stories. Text-heavy images are allowed but can reach fewer people; Ad A uses fewer words.
+- Landing page: the live homepage, form on the first screen, privacy policy linked, consent banner. Verified.
+
+8. VERIFIED ON THE LIVE SITE (simulated iPhone, events intercepted, nothing sent)
+- Accept + successful sign-up: Meta Lead fires exactly once; _fbc and _fbp cookies set.
+- Thanks page reloaded: still once (no double count).
+- Failed sign-up: no Lead; the error message is shown.
+- Reject: no Meta requests or cookies; the sign-up is still saved, with the Facebook source label.
+- UTM tags and fbclid are kept, and the source is recorded as facebook/cmt_meta_test_nov26/<ad name>/hero.
+
+9. WHAT TO EXPECT FROM GBP 35 (estimate, not a promise)
+Roughly 30-90 link clicks at typical UK costs. At a 2-5% sign-up rate that's about 1-4 guide sign-ups.
+This is enough to see which message (A or B) gets cheaper clicks, but not to prove cost per lead.
+Meta won't finish its learning phase on this budget (it needs about 50 conversions a week); that's expected.
+
+10. SETUP NEEDED (Claude has no Meta access)
+- Meta Business portfolio with an ad account in GBP, time zone Europe/London, and a payment method.
+- Facebook Page (exists: facebook.com/profile.php?id=61596601460303) and Instagram account connected to it.
+- Pixel 2104372500283712 owned by, or shared with, the business and assigned to the ad account.
+- Domain verification of challengemansiontax.co.uk in Business settings (give Claude the meta-tag and it can add it
+  to the site via a pull request, or add a DNS TXT record yourself).
+- In Events Manager, check that the Lead event is received (Test Events tab, using your own test sign-up).
+- Not set up: Conversions API. Optional; only consented visitors are tracked by design.
