@@ -1,21 +1,23 @@
 /**
- * Challenge Mansion Tax: Google Ads evidence report + changes for approval (v2, 14 Nov 2026)
+ * Challenge Mansion Tax: Google Ads evidence report + changes for approval (v3, 14 Nov 2026)
  * Account 612-379-5103 · Campaign "Test Nov 26 - Search" (ID 24454587778)
  *
  * SAFE BY DEFAULT: with every switch below left false, this script ONLY READS and logs. It changes
  * nothing even if you press Run. To apply an approved change, set that one switch to true and Run.
  *
  * HOW TO USE (Google Ads, desktop site): Tools > Bulk actions > Scripts > + > paste > Authorise.
- *   1. Click PREVIEW (or Run with all switches false). Read the Logs.
- *   2. Turn on only the switches you have approved, click PREVIEW again to see exactly what would
- *      change, then RUN.
+ *   NEXT STEP: click PREVIEW only (not Run). Read the Logs and send them to Claude.
+ *   Only after approval: turn on the approved switches, PREVIEW again to see exactly what would
+ *   change, and only then RUN.
+ *
+ * Postcode bid adjustments are deliberately NOT in this script: no bid increases until there is
+ * conversion evidence and the bidding strategy has been checked (it is reported below).
  */
 
 // ---- Switches: leave false until approved -------------------------------------------------------
 var APPLY_URL_SUFFIX = false;     // tracking suffix so each lead shows its keyword
 var APPLY_NEGATIVES = false;      // Scotland / Wales / Northern Ireland exclusions (see NEGATIVES)
 var APPLY_SITELINKS = false;      // six sitelinks
-var APPLY_POSTCODE_BIDS = false;  // add high-value postcode districts with a bid increase
 var CREATE_NEW_ADS = false;       // two differentiated responsive search ads, created PAUSED
 
 // ---- Settings -----------------------------------------------------------------------------------
@@ -30,11 +32,10 @@ var SITELINKS = [
   ['£2m Threshold Explained', 'https://challengemansiontax.co.uk/how-much-is-mansion-tax'],
   ['How To Appeal Your Band', 'https://challengemansiontax.co.uk/mansion-tax-appeals'],
   ['Property Value Evidence', 'https://challengemansiontax.co.uk/services'],
-  ['Free Mansion Tax Guide', 'https://challengemansiontax.co.uk/#quickGuide'],
+  ['Free Mansion Tax Guide', 'https://challengemansiontax.co.uk/#guide'],
   ['Who Pays Mansion Tax', 'https://challengemansiontax.co.uk/who-pays-mansion-tax']
 ];
 var POSTCODES = ['SW6', 'SW11', 'N1', 'NW3', 'W4', 'SW19', 'SW7', 'NW6', 'N10', 'AL5', 'W2', 'SW15', 'W8', 'SE1', 'SW4'];
-var POSTCODE_BID_MODIFIER = 1.25; // +25% where the searcher is in one of these districts
 var ADS = {
   information: {
     headlines: ['Mansion Tax on £2m Homes?', 'Check Your Likely Band Free', 'Mansion Tax Checker',
@@ -54,7 +55,7 @@ var ADS = {
 var REPORT_FROM = '2026-11-10', REPORT_TO = '2026-12-31';
 
 function main() {
-  Logger.log('Mode: ' + ([APPLY_URL_SUFFIX, APPLY_NEGATIVES, APPLY_SITELINKS, APPLY_POSTCODE_BIDS, CREATE_NEW_ADS].some(Boolean)
+  Logger.log('Mode: ' + ([APPLY_URL_SUFFIX, APPLY_NEGATIVES, APPLY_SITELINKS, CREATE_NEW_ADS].some(Boolean)
     ? 'CHANGES SWITCHED ON (see section 2)' : 'READ ONLY (no switch is on, nothing will change)'));
   Logger.log('===== 1. EVIDENCE REPORT =====');
   safe('Campaign settings', reportCampaign);
@@ -62,8 +63,11 @@ function main() {
   safe('Keywords', reportKeywords);
   safe('Search terms', reportSearchTerms);
   safe('Ads', reportAds);
-  safe('Locations', reportLocations);
-  safe('Postcode district IDs', lookupPostcodes);
+  safe('Bidding strategy', reportBidding);
+  safe('Targeted locations', reportLocations);
+  safe('Where clicks came from: presence vs interest', reportLocationType);
+  safe('Where searchers physically were', reportUserLocation);
+  safe('Postcode district IDs (lookup only, nothing is added)', lookupPostcodes);
 
   Logger.log('');
   Logger.log('===== 2. CHANGES =====');
@@ -71,9 +75,8 @@ function main() {
   if (APPLY_URL_SUFFIX) safe('Final URL suffix', function () { setSuffix(c); }); else Logger.log('Final URL suffix: switch off, skipped.');
   if (APPLY_NEGATIVES) safe('Negative keywords', function () { addNegatives(c); }); else Logger.log('Negatives: switch off, skipped. Would add: ' + NEGATIVES.join(', '));
   if (APPLY_SITELINKS) safe('Sitelinks', function () { addSitelinks(c); }); else Logger.log('Sitelinks: switch off, skipped.');
-  if (APPLY_POSTCODE_BIDS) safe('Postcode bids', function () { addPostcodes(c); }); else Logger.log('Postcode bids: switch off, skipped.');
   if (CREATE_NEW_ADS) safe('New ads (paused)', function () { createAds(c); }); else Logger.log('New ads: switch off, skipped.');
-  Logger.log('Not done by this script (do by hand): billing, end date, conversion Count: One, location option Presence, budget.');
+  Logger.log('Not done by this script: billing, end date, conversion Count: One, location option, budget, bid adjustments.');
 }
 
 function getCampaign() {
@@ -130,6 +133,27 @@ function reportLocations() {
     Logger.log('Location ' + r.campaignCriterion.location.geoTargetConstant + (r.campaignCriterion.negative ? ' (excluded)' : '') +
       ' | bid modifier ' + (r.campaignCriterion.bidModifier || 1)); });
 }
+function reportBidding() {
+  rows('SELECT campaign.bidding_strategy_type, campaign.manual_cpc.enhanced_cpc_enabled FROM campaign WHERE campaign.id = ' + CAMPAIGN_ID)
+    .forEach(function (r) { Logger.log('Bidding strategy: ' + r.campaign.biddingStrategyType +
+      '  (with automated strategies such as MAXIMIZE_CLICKS or MAXIMIZE_CONVERSIONS, location bid adjustments are largely ignored)'); });
+}
+function reportLocationType() {
+  var t = {}, list = rows('SELECT geographic_view.location_type, geographic_view.country_criterion_id, metrics.clicks, metrics.cost_micros, ' +
+    'metrics.conversions FROM geographic_view WHERE campaign.id = ' + CAMPAIGN_ID + DATES);
+  list.forEach(function (r) { var k = r.geographicView.locationType + ' | country ' + r.geographicView.countryCriterionId;
+    t[k] = t[k] || { c: 0, m: 0, v: 0 }; t[k].c += Number(r.metrics.clicks); t[k].m += Number(r.metrics.costMicros); t[k].v += Number(r.metrics.conversions); });
+  Object.keys(t).forEach(function (k) { Logger.log(k + ' | ' + t[k].c + ' clicks | ' + money(t[k].m) + ' | conv ' + t[k].v); });
+  Logger.log('LOCATION_OF_PRESENCE = matched because the person was in/regularly in the area; AREA_OF_INTEREST = matched on interest only. Country 2826 = United Kingdom.');
+}
+function reportUserLocation() {
+  var t = {}, list = rows('SELECT user_location_view.country_criterion_id, user_location_view.targeting_location, metrics.clicks, ' +
+    'metrics.cost_micros, metrics.conversions FROM user_location_view WHERE campaign.id = ' + CAMPAIGN_ID + DATES);
+  list.forEach(function (r) { var k = 'physical country ' + r.userLocationView.countryCriterionId + (r.userLocationView.targetingLocation ? ' (inside targeting)' : ' (outside targeting)');
+    t[k] = t[k] || { c: 0, m: 0, v: 0 }; t[k].c += Number(r.metrics.clicks); t[k].m += Number(r.metrics.costMicros); t[k].v += Number(r.metrics.conversions); });
+  Object.keys(t).forEach(function (k) { Logger.log(k + ' | ' + t[k].c + ' clicks | ' + money(t[k].m) + ' | conv ' + t[k].v); });
+  Logger.log('Physical location is country-level here; region detail is in Google Ads > Insights & reports > When and where ads showed > Locations (User location).');
+}
 var POSTCODE_IDS = {};
 function lookupPostcodes() {
   var names = POSTCODES.map(function (p) { return "'" + p + "'"; }).join(',');
@@ -164,16 +188,6 @@ function addSitelinks(c) {
     var op = AdsApp.extensions().newSitelinkBuilder().withLinkText(s[0]).withFinalUrl(s[1]).build();
     if (!op.isSuccessful()) { Logger.log('Could not create "' + s[0] + '": ' + op.getErrors().join('; ')); return; }
     c.addSitelink(op.getResult()); Logger.log('Added sitelink "' + s[0] + '" -> ' + s[1]); });
-}
-function addPostcodes(c) {
-  if (!Object.keys(POSTCODE_IDS).length) lookupPostcodes();
-  var have = {}, it = c.targeting().targetedLocations().get();
-  while (it.hasNext()) { var l = it.next(); have[l.getId()] = l; }
-  POSTCODES.forEach(function (p) {
-    var id = POSTCODE_IDS[p]; if (!id) { Logger.log('Skipped ' + p + ': no Google target ID.'); return; }
-    if (have[id]) { have[id].setBidModifier(POSTCODE_BID_MODIFIER); Logger.log(p + ': bid modifier set to ' + POSTCODE_BID_MODIFIER); return; }
-    var op = c.addLocation(Number(id), POSTCODE_BID_MODIFIER);
-    Logger.log(p + (op.isSuccessful() ? ': added with bid modifier ' + POSTCODE_BID_MODIFIER : ': could not add: ' + op.getErrors().join('; '))); });
 }
 function createAds(c) {
   var ag = c.adGroups().withCondition("ad_group.status = 'ENABLED'").get();
