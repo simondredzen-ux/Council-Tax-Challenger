@@ -1,0 +1,38 @@
+[
+ {
+  "width": "375",
+  "viewport_h": 667,
+  "cookie_banner_px": 86,
+  "submit_button_bottom_px": 553,
+  "button_on_first_screen": true,
+  "form_fields_font_px": "qg_name:16 qg_postcode:16 qg_email:16",
+  "site_inputs_under_16px": "0/18",
+  "submitted_to_thanks": true,
+  "netlify_post_sent": true,
+  "source_field": "direct%2Fhero"
+ },
+ {
+  "width": "390",
+  "viewport_h": 664,
+  "cookie_banner_px": 86,
+  "submit_button_bottom_px": 553,
+  "button_on_first_screen": true,
+  "form_fields_font_px": "qg_name:16 qg_postcode:16 qg_email:16",
+  "site_inputs_under_16px": "0/18",
+  "submitted_to_thanks": true,
+  "netlify_post_sent": true,
+  "source_field": "direct%2Fhero"
+ },
+ {
+  "width": "430",
+  "viewport_h": 740,
+  "cookie_banner_px": 86,
+  "submit_button_bottom_px": 553,
+  "button_on_first_screen": true,
+  "form_fields_font_px": "qg_name:16 qg_postcode:16 qg_email:16",
+  "site_inputs_under_16px": "0/18",
+  "submitted_to_thanks": true,
+  "netlify_post_sent": true,
+  "source_field": "direct%2Fhero"
+ }
+]

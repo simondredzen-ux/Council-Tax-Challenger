@@ -1,0 +1,38 @@
+[
+ {
+  "width": "375",
+  "viewport_h": 667,
+  "cookie_banner_px": 184,
+  "submit_button_bottom_px": 3386,
+  "button_on_first_screen": false,
+  "form_fields_font_px": "first_name:15.2 postcode:15.2 email:15.2",
+  "site_inputs_under_16px": "15/15",
+  "submitted_to_thanks": true,
+  "netlify_post_sent": true,
+  "source_field": "direct"
+ },
+ {
+  "width": "390",
+  "viewport_h": 664,
+  "cookie_banner_px": 184,
+  "submit_button_bottom_px": 3280,
+  "button_on_first_screen": false,
+  "form_fields_font_px": "first_name:15.2 postcode:15.2 email:15.2",
+  "site_inputs_under_16px": "15/15",
+  "submitted_to_thanks": true,
+  "netlify_post_sent": true,
+  "source_field": "direct"
+ },
+ {
+  "width": "430",
+  "viewport_h": 740,
+  "cookie_banner_px": 162,
+  "submit_button_bottom_px": 3035,
+  "button_on_first_screen": false,
+  "form_fields_font_px": "first_name:15.2 postcode:15.2 email:15.2",
+  "site_inputs_under_16px": "15/15",
+  "submitted_to_thanks": true,
+  "netlify_post_sent": true,
+  "source_field": "direct"
+ }
+]

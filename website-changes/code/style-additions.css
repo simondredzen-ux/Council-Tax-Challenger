@@ -1,0 +1,29 @@
+
+/* Short free-guide form in the hero */
+.quick-guide{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px;display:grid;gap:10px;max-width:680px}
+.quick-guide .qg-title{margin:0;font-weight:700;font-size:1.05rem;color:var(--ink)}
+.quick-guide .qg-sub{margin:0;color:var(--muted);font-size:.95rem}
+.qg-fields{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px}
+.quick-guide p.hint{margin:0}
+.qg-msg:empty{display:none}
+.qg-msg.error{color:var(--error)}
+
+@media (max-width:600px){
+  /* iPhone zooms the page when a field's text is under 16px; stop that on every form */
+  .input,select.input{font-size:16px}
+  .qg-fields{grid-template-columns:1fr 1fr}
+  .qg-fields input[type=email]{grid-column:1/-1}
+  .quick-guide .btn{width:100%}
+  /* Less space above the headline, so the offer shows on the first screen */
+  .hero{padding:24px 0 32px}
+  .hero .stack{gap:14px}
+  .hero h1{font-size:1.75rem}
+  .quick-guide{padding:14px;gap:8px}
+  .quick-guide .qg-title{font-size:1rem}
+  .quick-guide .qg-sub{font-size:.9rem}
+  /* Slim cookie bar instead of a card covering the bottom third of the screen */
+  .cookie-banner{left:8px;right:8px;bottom:8px;padding:10px 12px;font-size:.8rem;line-height:1.4;display:flex;align-items:center;gap:10px}
+  .cookie-banner p{margin:0;flex:1}
+  .cookie-actions{flex-direction:column;gap:6px}
+  .cookie-actions .btn{padding:6px 14px;font-size:.8rem}
+}

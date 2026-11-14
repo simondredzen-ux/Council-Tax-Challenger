@@ -1,0 +1,103 @@
+Please make these changes to the challengemansiontax.co.uk website in this repository, on a new branch, and open a pull request for me to review. Do not merge or deploy to production. They were designed and tested against a copy of the live home page (iPhone 13, iPhone SE and desktop); the new form was submitted in testing with network posts intercepted and correctly handed over to the existing sign-up form and redirected to /thanks.html.
+
+Goal: Google Ads visitors (almost all on phones) never reached the free-guide form, which sits far down the page, and the cookie banner covered the bottom third of the screen. These changes put a short free-guide form on the first screen of a phone and make the cookie banner a slim bar.
+
+1. Home page (index.html): insert this form directly after the hero <h1> (inside section.hero .wrap.stack, before p.lede). Keep everything else.
+
+      <form class="quick-guide" id="quickGuide" novalidate aria-label="Get the free guide">
+        <p class="qg-title">Free guide: how to challenge a mansion tax valuation</p>
+        <p class="qg-sub">Could your home be caught by the £2m threshold? See how to check your exposure and challenge an incorrect valuation.</p>
+        <div class="qg-fields">
+          <input class="input" name="qg_name" autocomplete="given-name" placeholder="First name" aria-label="First name">
+          <input class="input" name="qg_postcode" autocomplete="postal-code" placeholder="Postcode" aria-label="Property postcode">
+          <input class="input" name="qg_email" type="email" autocomplete="email" inputmode="email" placeholder="Email address" aria-label="Email address">
+        </div>
+        <button class="btn" type="submit">Email me the free guide</button>
+        <p class="hint qg-msg" role="status"></p>
+        <p class="hint">Free, sent straight to your inbox. <a href="/privacy.html">Privacy policy</a>.</p>
+      </form>
+
+2. Create assets/hero-signup.js with exactly this content, and load it on the home page straight after <script src="/assets/signup.js"></script>:
+
+// Short free-guide form at the top of the home page. It doesn't post anything itself: it copies
+// name, postcode and email into the main sign-up form (#signup) and submits that, so the lead is
+// stored in Netlify Forms, sent to MailerLite and tracked exactly as before. The "source" field is
+// tagged "hero" so sign-ups from this form can be told apart from the main form.
+(function () {
+  var q = document.getElementById("quickGuide");
+  var s = document.getElementById("signup");
+  if (!q || !s) return;
+  var msg = q.querySelector(".qg-msg");
+  var btn = q.querySelector("button[type=submit]");
+  var label = btn.textContent;
+
+  function show(text) { msg.textContent = text; msg.className = "hint qg-msg error"; }
+
+  // If the main form reports an error (e.g. network), show it up here too.
+  var mainMsg = document.getElementById("formMsg");
+  if (mainMsg) new MutationObserver(function () {
+    if (btn.disabled && mainMsg.classList.contains("error")) {
+      show(mainMsg.textContent); btn.disabled = false; btn.textContent = label;
+    }
+  }).observe(mainMsg, { attributes: true, childList: true, characterData: true, subtree: true });
+
+  q.addEventListener("submit", function (e) {
+    e.preventDefault();
+    msg.textContent = ""; msg.className = "hint qg-msg";
+    var name = q.qg_name.value.trim(), pc = q.qg_postcode.value.trim(), email = q.qg_email.value.trim();
+    if (!name) return show("Please enter your first name.");
+    if (!pc) return show("Please enter the property postcode.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return show("Please enter a valid email address.");
+
+    s.first_name.value = name;
+    s.postcode.value = pc;
+    s.email.value = email;
+    var src = s.querySelector("[name=source]");
+    if (src && src.value.indexOf("hero") === -1) src.value = (src.value + "/hero").slice(0, 100);
+
+    btn.disabled = true; btn.textContent = "Sending…";
+    if (s.requestSubmit) s.requestSubmit();
+    else s.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+  });
+})();
+
+3. Append this to the end of assets/style.css:
+
+/* Short free-guide form in the hero */
+.quick-guide{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:16px;display:grid;gap:10px;max-width:680px}
+.quick-guide .qg-title{margin:0;font-weight:700;font-size:1.05rem;color:var(--ink)}
+.quick-guide .qg-sub{margin:0;color:var(--muted);font-size:.95rem}
+.qg-fields{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px}
+.quick-guide p.hint{margin:0}
+.qg-msg:empty{display:none}
+.qg-msg.error{color:var(--error)}
+
+@media (max-width:600px){
+  /* iPhone zooms the page when a field's text is under 16px; stop that on every form */
+  .input,select.input{font-size:16px}
+  .qg-fields{grid-template-columns:1fr 1fr}
+  .qg-fields input[type=email]{grid-column:1/-1}
+  .quick-guide .btn{width:100%}
+  /* Less space above the headline, so the offer shows on the first screen */
+  .hero{padding:24px 0 32px}
+  .hero .stack{gap:14px}
+  .hero h1{font-size:1.75rem}
+  .quick-guide{padding:14px;gap:8px}
+  .quick-guide .qg-title{font-size:1rem}
+  .quick-guide .qg-sub{font-size:.9rem}
+  /* Slim cookie bar instead of a card covering the bottom third of the screen */
+  .cookie-banner{left:8px;right:8px;bottom:8px;padding:10px 12px;font-size:.8rem;line-height:1.4;display:flex;align-items:center;gap:10px}
+  .cookie-banner p{margin:0;flex:1}
+  .cookie-actions{flex-direction:column;gap:6px}
+  .cookie-actions .btn{padding:6px 14px;font-size:.8rem}
+}
+
+4. In assets/consent.js, shorten the banner text. Replace:
+  We use Meta and Google cookies to measure our ads, so we can reach more homeowners and offer our free mansion tax check. Nothing personal is shared.
+with:
+  We use Meta and Google cookies to measure our ads. Nothing personal is shared.
+Do not change how consent works.
+
+5. Check: the hero form must NOT become a Netlify form (no netlify / data-netlify attribute). It only copies values into the existing #signup form and submits that, so Netlify Forms, MailerLite and the Lead tracking all work as before, with "/hero" added to the source field so these sign-ups can be told apart.
+
+6. Bump any cache-busting version on style.css / consent.js if the site uses one. Then open the pull request and give me the Netlify deploy preview link so I can test it on my iPad before merging.
