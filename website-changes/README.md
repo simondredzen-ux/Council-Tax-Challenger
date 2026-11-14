@@ -1,5 +1,9 @@
 # Proposed changes to challengemansiontax.co.uk (not yet live)
 
+> **Update, 14 Nov (evening):** the code in `code/` has been corrected after a full 8-iPhone test.
+> See `qa-14nov/REPORT.md` for the device report, the tracking verification and the remaining issues.
+> The results tables further down this README are from the first, smaller test.
+
 These changes have **not** been committed to the website's own repository or deployed. Access to
 that repository was blocked in the session that wrote them. This folder holds the exact code and the
 test evidence for review. `apply-prompt.txt` is the instruction to apply them in a session that has

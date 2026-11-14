@@ -6,6 +6,18 @@
   var q = document.getElementById("quickGuide");
   var s = document.getElementById("signup");
   if (!q || !s) return;
+  // Label visits from Google Ads, so Netlify and MailerLite can tell them apart from ordinary Google
+  // searches (both otherwise show as "www.google.com"). Only the label is kept, not Google's click ID.
+  // Links tagged with utm_source (e.g. the campaign's Final URL suffix) keep their own label.
+  try {
+    var qs = new URLSearchParams(location.search);
+    var srcField = s.querySelector("[name=source]");
+    if (qs.get("gclid") && !qs.get("utm_source") && srcField && srcField.value.indexOf("google-ads") !== 0) {
+      srcField.value = "google-ads";
+      try { sessionStorage.setItem("source", "google-ads"); } catch (err) {}
+    }
+  } catch (err) {}
+
   var msg = q.querySelector(".qg-msg");
   var btn = q.querySelector("button[type=submit]");
   var label = btn.textContent;

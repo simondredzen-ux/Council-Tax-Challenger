@@ -13,7 +13,7 @@
   .input,select.input{font-size:16px}
   .qg-fields{grid-template-columns:1fr 1fr}
   .qg-fields input[type=email]{grid-column:1/-1}
-  .quick-guide .btn{width:100%}
+  .quick-guide .btn{width:100%;min-height:44px}
   /* Less space above the headline, so the offer shows on the first screen */
   .hero{padding:24px 0 32px}
   .hero .stack{gap:14px}
@@ -21,9 +21,36 @@
   .quick-guide{padding:14px;gap:8px}
   .quick-guide .qg-title{font-size:1rem}
   .quick-guide .qg-sub{font-size:.9rem}
-  /* Slim cookie bar instead of a card covering the bottom third of the screen */
-  .cookie-banner{left:8px;right:8px;bottom:8px;padding:10px 12px;font-size:.8rem;line-height:1.4;display:flex;align-items:center;gap:10px}
+  /* Slim cookie bar instead of a card covering the bottom third of the screen.
+     Accept and Reject sit side by side and are 44px tall (Apple's minimum touch size). */
+  .cookie-banner{left:8px;right:8px;bottom:8px;padding:8px 10px;font-size:.78rem;line-height:1.35;display:flex;align-items:center;gap:8px}
   .cookie-banner p{margin:0;flex:1}
-  .cookie-actions{flex-direction:column;gap:6px}
-  .cookie-actions .btn{padding:6px 14px;font-size:.8rem}
+  .cookie-actions{flex:none;gap:6px}
+  .cookie-actions .btn{min-height:44px;padding:0 12px;font-size:.85rem}
+}
+
+/* Short phones (iPhone SE, 13 mini): less space above the form so it sits on the first screen.
+   The surcharge label is hidden here only; the same facts are in the paragraph below the form. */
+@media (max-width:600px) and (max-height:650px){
+  .hero{padding-top:12px}
+  .hero .eyebrow{display:none}
+  .hero .stack{gap:12px}
+}
+
+/* Phones in landscape: cookie bar on one row, so it doesn't fill a third of the short screen */
+@media (max-height:500px) and (orientation:landscape){
+  .hero{padding:16px 0 24px}
+  .hero .stack{gap:12px}
+  .cookie-banner{max-width:760px;padding:8px 12px;font-size:.8rem;line-height:1.35;display:flex;align-items:center;gap:12px}
+  .cookie-banner p{margin:0;flex:1}
+  .cookie-actions{flex:none;gap:8px}
+  .cookie-actions .btn{min-height:44px;padding:0 16px}
+}
+
+/* Larger text (Safari "aA" at 150% and above makes the page about 250px wide or less): let the
+   header wrap and stack the fact boxes, so nothing runs off the side and forces sideways scrolling */
+@media (max-width:300px){
+  .site-header .wrap{flex-wrap:wrap;row-gap:6px}
+  .facts{grid-template-columns:1fr}
+  .qg-fields{grid-template-columns:1fr}
 }

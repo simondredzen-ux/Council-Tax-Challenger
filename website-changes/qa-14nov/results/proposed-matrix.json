@@ -1,0 +1,66 @@
+[
+ {
+  "id": "13",
+  "name": "iPhone 13 / 14",
+  "viewport": "390x844",
+  "safariVisibleH": 667,
+  "bannerH": 85,
+  "formTitleVisible": true,
+  "emailVisible": true,
+  "buttonVisible": true,
+  "buttonY": 554,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 44,
+    "w": 325
+   },
+   {
+    "t": "Accept",
+    "h": 44,
+    "w": 72
+   },
+   {
+    "t": "Reject",
+    "h": 44,
+    "w": 67
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "qg_name=given-name",
+   "qg_postcode=postal-code",
+   "qg_email=email"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 19,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 216,
+    "iw": 216
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 260,
+    "iw": 260
+   }
+  }
+ }
+]

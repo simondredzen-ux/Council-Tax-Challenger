@@ -1,0 +1,594 @@
+[
+ {
+  "id": "se",
+  "name": "iPhone SE (2022)",
+  "viewport": "375x667",
+  "safariVisibleH": 527,
+  "bannerH": 184,
+  "formTitleVisible": false,
+  "emailVisible": false,
+  "buttonVisible": false,
+  "buttonY": 3386,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [
+   "e-postcode:15.2px",
+   "e-area:15.2px",
+   "e-unit:15.2px",
+   "e-condition:15.2px",
+   "first_name:15.2px",
+   "postcode:15.2px",
+   "email:15.2px",
+   "email:15.2px"
+  ],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 43,
+    "w": 295
+   },
+   {
+    "t": "Accept",
+    "h": 34,
+    "w": 150
+   },
+   {
+    "t": "Reject",
+    "h": 34,
+    "w": 150
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "first_name=given-name",
+   "postcode=postal-code",
+   "email=email",
+   "whatsapp_number=tel"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 43,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   }
+  }
+ },
+ {
+  "id": "mini",
+  "name": "iPhone 13 mini",
+  "viewport": "375x812",
+  "safariVisibleH": 641,
+  "bannerH": 184,
+  "formTitleVisible": false,
+  "emailVisible": false,
+  "buttonVisible": false,
+  "buttonY": 3386,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [
+   "e-postcode:15.2px",
+   "e-area:15.2px",
+   "e-unit:15.2px",
+   "e-condition:15.2px",
+   "first_name:15.2px",
+   "postcode:15.2px",
+   "email:15.2px",
+   "email:15.2px"
+  ],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 43,
+    "w": 295
+   },
+   {
+    "t": "Accept",
+    "h": 34,
+    "w": 150
+   },
+   {
+    "t": "Reject",
+    "h": 34,
+    "w": 150
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "first_name=given-name",
+   "postcode=postal-code",
+   "email=email",
+   "whatsapp_number=tel"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 43,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   }
+  }
+ },
+ {
+  "id": "13",
+  "name": "iPhone 13 / 14",
+  "viewport": "390x844",
+  "safariVisibleH": 667,
+  "bannerH": 184,
+  "formTitleVisible": false,
+  "emailVisible": false,
+  "buttonVisible": false,
+  "buttonY": 3280,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [
+   "e-postcode:15.2px",
+   "e-area:15.2px",
+   "e-unit:15.2px",
+   "e-condition:15.2px",
+   "first_name:15.2px",
+   "postcode:15.2px",
+   "email:15.2px",
+   "email:15.2px"
+  ],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 43,
+    "w": 310
+   },
+   {
+    "t": "Accept",
+    "h": 34,
+    "w": 157
+   },
+   {
+    "t": "Reject",
+    "h": 34,
+    "w": 157
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "first_name=given-name",
+   "postcode=postal-code",
+   "email=email",
+   "whatsapp_number=tel"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 42,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   }
+  }
+ },
+ {
+  "id": "15pro",
+  "name": "iPhone 14 Pro / 15 Pro",
+  "viewport": "393x852",
+  "safariVisibleH": 673,
+  "bannerH": 184,
+  "formTitleVisible": false,
+  "emailVisible": false,
+  "buttonVisible": false,
+  "buttonY": 3280,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [
+   "e-postcode:15.2px",
+   "e-area:15.2px",
+   "e-unit:15.2px",
+   "e-condition:15.2px",
+   "first_name:15.2px",
+   "postcode:15.2px",
+   "email:15.2px",
+   "email:15.2px"
+  ],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 43,
+    "w": 313
+   },
+   {
+    "t": "Accept",
+    "h": 34,
+    "w": 159
+   },
+   {
+    "t": "Reject",
+    "h": 34,
+    "w": 159
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "first_name=given-name",
+   "postcode=postal-code",
+   "email=email",
+   "whatsapp_number=tel"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 41,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 328,
+    "iw": 328
+   }
+  }
+ },
+ {
+  "id": "17pro",
+  "name": "iPhone 16 Pro / 17 Pro",
+  "viewport": "402x874",
+  "safariVisibleH": 690,
+  "bannerH": 184,
+  "formTitleVisible": false,
+  "emailVisible": false,
+  "buttonVisible": false,
+  "buttonY": 3159,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [
+   "e-postcode:15.2px",
+   "e-area:15.2px",
+   "e-unit:15.2px",
+   "e-condition:15.2px",
+   "first_name:15.2px",
+   "postcode:15.2px",
+   "email:15.2px",
+   "email:15.2px"
+  ],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 43,
+    "w": 322
+   },
+   {
+    "t": "Accept",
+    "h": 34,
+    "w": 163
+   },
+   {
+    "t": "Reject",
+    "h": 34,
+    "w": 163
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "first_name=given-name",
+   "postcode=postal-code",
+   "email=email",
+   "whatsapp_number=tel"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 41,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   }
+  }
+ },
+ {
+  "id": "air",
+  "name": "iPhone Air",
+  "viewport": "420x912",
+  "safariVisibleH": 720,
+  "bannerH": 162,
+  "formTitleVisible": false,
+  "emailVisible": false,
+  "buttonVisible": false,
+  "buttonY": 3110,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [
+   "e-postcode:15.2px",
+   "e-area:15.2px",
+   "e-unit:15.2px",
+   "e-condition:15.2px",
+   "first_name:15.2px",
+   "postcode:15.2px",
+   "email:15.2px",
+   "email:15.2px"
+  ],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 43,
+    "w": 340
+   },
+   {
+    "t": "Accept",
+    "h": 34,
+    "w": 172
+   },
+   {
+    "t": "Reject",
+    "h": 34,
+    "w": 172
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "first_name=given-name",
+   "postcode=postal-code",
+   "email=email",
+   "whatsapp_number=tel"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 39,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   }
+  }
+ },
+ {
+  "id": "15pm",
+  "name": "iPhone 15 Pro Max",
+  "viewport": "430x932",
+  "safariVisibleH": 736,
+  "bannerH": 162,
+  "formTitleVisible": false,
+  "emailVisible": false,
+  "buttonVisible": false,
+  "buttonY": 3035,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [
+   "e-postcode:15.2px",
+   "e-area:15.2px",
+   "e-unit:15.2px",
+   "e-condition:15.2px",
+   "first_name:15.2px",
+   "postcode:15.2px",
+   "email:15.2px",
+   "email:15.2px"
+  ],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 43,
+    "w": 350
+   },
+   {
+    "t": "Accept",
+    "h": 34,
+    "w": 177
+   },
+   {
+    "t": "Reject",
+    "h": 34,
+    "w": 177
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "first_name=given-name",
+   "postcode=postal-code",
+   "email=email",
+   "whatsapp_number=tel"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 38,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   }
+  }
+ },
+ {
+  "id": "17pm",
+  "name": "iPhone 16/17 Pro Max",
+  "viewport": "440x956",
+  "safariVisibleH": 755,
+  "bannerH": 162,
+  "formTitleVisible": false,
+  "emailVisible": false,
+  "buttonVisible": false,
+  "buttonY": 3014,
+  "bannerCoversButton": false,
+  "hScroll": false,
+  "smallInputs": [
+   "e-postcode:15.2px",
+   "e-area:15.2px",
+   "e-unit:15.2px",
+   "e-condition:15.2px",
+   "first_name:15.2px",
+   "postcode:15.2px",
+   "email:15.2px",
+   "email:15.2px"
+  ],
+  "taps": [
+   {
+    "t": "Email me the free gu",
+    "h": 43,
+    "w": 360
+   },
+   {
+    "t": "Accept",
+    "h": 34,
+    "w": 182
+   },
+   {
+    "t": "Reject",
+    "h": 34,
+    "w": 182
+   }
+  ],
+  "clipped": 1,
+  "autocomplete": [
+   "first_name=given-name",
+   "postcode=postal-code",
+   "email=email",
+   "whatsapp_number=tel"
+  ],
+  "accept": {
+   "gone": true,
+   "stored": true,
+   "fbq": true
+  },
+  "reject": {
+   "gone": true,
+   "stored": true,
+   "fbq": false
+  },
+  "submitted": true,
+  "landscape": {
+   "bannerShare": 37,
+   "hScroll": false
+  },
+  "zoom": {
+   "2": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   },
+   "1.5": {
+    "hScroll": false,
+    "sw": 327,
+    "iw": 327
+   }
+  }
+ }
+]

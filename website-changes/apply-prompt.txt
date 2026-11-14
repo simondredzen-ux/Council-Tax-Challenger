@@ -1,6 +1,8 @@
-Please make these changes to the challengemansiontax.co.uk website in this repository, on a new branch, and open a pull request for me to review. Do not merge or deploy to production. They were designed and tested against a copy of the live home page (iPhone 13, iPhone SE and desktop); the new form was submitted in testing with network posts intercepted and correctly handed over to the existing sign-up form and redirected to /thanks.html.
+Please make these changes to the challengemansiontax.co.uk website in this repository, on a new branch, and open a pull request for me to review. Do not merge or deploy to production.
 
-Goal: Google Ads visitors (almost all on phones) never reached the free-guide form, which sits far down the page, and the cookie banner covered the bottom third of the screen. These changes put a short free-guide form on the first screen of a phone and make the cookie banner a slim bar.
+They were tested in simulated iPhones (Playwright/Chromium emulation, 8 iPhone sizes from 375x667 to 440x956, portrait, landscape and larger text) against a copy of the live home page. The full report is in the Council-Tax-Challenger repository, branch claude/new-session-eakso8, folder website-changes/.
+
+Goal: phone visitors from ads never reached the free-guide form (3,000+ px down the page), the cookie card covered about a third of the screen, and every form field was 15.2px, so iPhones zoomed in when tapped.
 
 1. Home page (index.html): insert this form directly after the hero <h1> (inside section.hero .wrap.stack, before p.lede). Keep everything else.
 
@@ -27,6 +29,18 @@ Goal: Google Ads visitors (almost all on phones) never reached the free-guide fo
   var q = document.getElementById("quickGuide");
   var s = document.getElementById("signup");
   if (!q || !s) return;
+  // Label visits from Google Ads, so Netlify and MailerLite can tell them apart from ordinary Google
+  // searches (both otherwise show as "www.google.com"). Only the label is kept, not Google's click ID.
+  // Links tagged with utm_source (e.g. the campaign's Final URL suffix) keep their own label.
+  try {
+    var qs = new URLSearchParams(location.search);
+    var srcField = s.querySelector("[name=source]");
+    if (qs.get("gclid") && !qs.get("utm_source") && srcField && srcField.value.indexOf("google-ads") !== 0) {
+      srcField.value = "google-ads";
+      try { sessionStorage.setItem("source", "google-ads"); } catch (err) {}
+    }
+  } catch (err) {}
+
   var msg = q.querySelector(".qg-msg");
   var btn = q.querySelector("button[type=submit]");
   var label = btn.textContent;
@@ -77,7 +91,7 @@ Goal: Google Ads visitors (almost all on phones) never reached the free-guide fo
   .input,select.input{font-size:16px}
   .qg-fields{grid-template-columns:1fr 1fr}
   .qg-fields input[type=email]{grid-column:1/-1}
-  .quick-guide .btn{width:100%}
+  .quick-guide .btn{width:100%;min-height:44px}
   /* Less space above the headline, so the offer shows on the first screen */
   .hero{padding:24px 0 32px}
   .hero .stack{gap:14px}
@@ -85,11 +99,38 @@ Goal: Google Ads visitors (almost all on phones) never reached the free-guide fo
   .quick-guide{padding:14px;gap:8px}
   .quick-guide .qg-title{font-size:1rem}
   .quick-guide .qg-sub{font-size:.9rem}
-  /* Slim cookie bar instead of a card covering the bottom third of the screen */
-  .cookie-banner{left:8px;right:8px;bottom:8px;padding:10px 12px;font-size:.8rem;line-height:1.4;display:flex;align-items:center;gap:10px}
+  /* Slim cookie bar instead of a card covering the bottom third of the screen.
+     Accept and Reject sit side by side and are 44px tall (Apple's minimum touch size). */
+  .cookie-banner{left:8px;right:8px;bottom:8px;padding:8px 10px;font-size:.78rem;line-height:1.35;display:flex;align-items:center;gap:8px}
   .cookie-banner p{margin:0;flex:1}
-  .cookie-actions{flex-direction:column;gap:6px}
-  .cookie-actions .btn{padding:6px 14px;font-size:.8rem}
+  .cookie-actions{flex:none;gap:6px}
+  .cookie-actions .btn{min-height:44px;padding:0 12px;font-size:.85rem}
+}
+
+/* Short phones (iPhone SE, 13 mini): less space above the form so it sits on the first screen.
+   The surcharge label is hidden here only; the same facts are in the paragraph below the form. */
+@media (max-width:600px) and (max-height:650px){
+  .hero{padding-top:12px}
+  .hero .eyebrow{display:none}
+  .hero .stack{gap:12px}
+}
+
+/* Phones in landscape: cookie bar on one row, so it doesn't fill a third of the short screen */
+@media (max-height:500px) and (orientation:landscape){
+  .hero{padding:16px 0 24px}
+  .hero .stack{gap:12px}
+  .cookie-banner{max-width:760px;padding:8px 12px;font-size:.8rem;line-height:1.35;display:flex;align-items:center;gap:12px}
+  .cookie-banner p{margin:0;flex:1}
+  .cookie-actions{flex:none;gap:8px}
+  .cookie-actions .btn{min-height:44px;padding:0 16px}
+}
+
+/* Larger text (Safari "aA" at 150% and above makes the page about 250px wide or less): let the
+   header wrap and stack the fact boxes, so nothing runs off the side and forces sideways scrolling */
+@media (max-width:300px){
+  .site-header .wrap{flex-wrap:wrap;row-gap:6px}
+  .facts{grid-template-columns:1fr}
+  .qg-fields{grid-template-columns:1fr}
 }
 
 4. In assets/consent.js, shorten the banner text. Replace:
@@ -98,6 +139,6 @@ with:
   We use Meta and Google cookies to measure our ads. Nothing personal is shared.
 Do not change how consent works.
 
-5. Check: the hero form must NOT become a Netlify form (no netlify / data-netlify attribute). It only copies values into the existing #signup form and submits that, so Netlify Forms, MailerLite and the Lead tracking all work as before, with "/hero" added to the source field so these sign-ups can be told apart.
+5. Check: the hero form must NOT become a Netlify form (no netlify / data-netlify attribute). It only copies values into the existing #signup form and submits that, so Netlify Forms, MailerLite and the Lead tracking all work as before, with "/hero" added to the source field (and "google-ads" when the visit came from a Google Ads click without utm tags).
 
-6. Bump any cache-busting version on style.css / consent.js if the site uses one. Then open the pull request and give me the Netlify deploy preview link so I can test it on my iPad before merging.
+6. Bump any cache-busting version on style.css / consent.js if the site uses one. Then open the pull request and give me the Netlify deploy preview link so I can test it on a real iPhone before merging.
