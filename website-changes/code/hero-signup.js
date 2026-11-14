@@ -44,7 +44,7 @@
     s.postcode.value = pc;
     s.email.value = email;
     var src = s.querySelector("[name=source]");
-    if (src && src.value.indexOf("hero") === -1) src.value = (src.value + "/hero").slice(0, 100);
+    if (src && !/\/hero$/.test(src.value)) src.value = (src.value.slice(0, 95) + "/hero");
 
     btn.disabled = true; btn.textContent = "Sending…";
     if (s.requestSubmit) s.requestSubmit();
