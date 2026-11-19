@@ -1,4 +1,4 @@
-BRIEF FOR APPROVAL (v4): OWNER'S AREA, PLUS VOICE REQUEST TO DRAFT PDF BY EMAIL
+BRIEF (v4, approved as recommended; amended 19 Nov 2026: Google sign-in): OWNER'S AREA, PLUS VOICE REQUEST TO DRAFT PDF BY EMAIL
 
 Challenge Mansion Tax (challengemansiontax.co.uk, repository simondredzen-ux/Mansion-Tax-, Netlify).
 Revised 19 Nov 2026. v4 = v3 (approved, with Simon's amendments) + one voice request on the iPhone
@@ -7,7 +7,8 @@ Simon approves this brief. Nothing is published to the live site without Simon's
 
 PART A. WHAT STAYS FROM v3 (APPROVED, BUILD IN PROGRESS)
 
-- /owner: a secret page behind a password checked on the server. It isn't linked anywhere or listed in
+- /owner: a secret page behind "Sign in with Google". Only OWNER_EMAIL (simondredzen@gmail.com) is let
+  in, and there is no site password (amendment, 19 Nov 2026). It isn't linked anywhere or listed in
   robots.txt or the sitemap.
 - Two ways to start: a customer report link, or direct entry.
 - Each sale is assessed on its merits. The checker's middle 50% is shown for reference only.
@@ -119,8 +120,9 @@ New for v4:
 
 PART D. SECURITY
 
-- Passwords and keys are set by Simon in Netlify (OWNER_PASSWORD, OWNER_VOICE_KEY and the email sending
-  credential) and never typed into chat.
+- Sign-in is with Simon's Google account (Google checks the password; the site never sees it). The keys
+  are set by Simon in Netlify (OWNER_VOICE_KEY and the Gmail app password) and are never typed into chat.
+  GOOGLE_CLIENT_ID is public and can be set by Claude.
 - OWNER_EMAIL is fixed in Netlify. The voice request can't name a recipient.
 - The voice key can only start a draft for Simon's own inbox. If it leaked, the worst case is unwanted
   draft emails to Simon (rate-limited); it can't read any data. It can be changed in Netlify and the
