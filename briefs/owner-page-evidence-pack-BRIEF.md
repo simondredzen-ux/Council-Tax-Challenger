@@ -1,168 +1,190 @@
-BRIEF FOR APPROVAL (v3): PRIVATE OWNER'S PAGE FOR DRAFT EVIDENCE PACKS
+BRIEF FOR APPROVAL (v4): OWNER'S AREA, PLUS VOICE REQUEST TO DRAFT PDF BY EMAIL
 
 Challenge Mansion Tax (challengemansiontax.co.uk, repository simondredzen-ux/Mansion-Tax-, Netlify).
-Revised 19 Nov 2026 from Simon's instructions (v3: secret owner's area and sign-in method agreed). Nothing is built until Simon approves this brief.
+Revised 19 Nov 2026. v4 = v3 (approved, with Simon's amendments) + one voice request on the iPhone
+that produces a draft Evidence Pack PDF and emails it to Simon. Nothing in the voice part is built until
+Simon approves this brief. Nothing is published to the live site without Simon's separate approval.
 
-GOAL
+PART A. WHAT STAYS FROM v3 (APPROVED, BUILD IN PROGRESS)
 
-One secret, private owner's page that no visitor sees, which Simon signs in to. Simon either pastes an existing customer report link or enters a property
-directly, clicks "Create draft pack", and sees an editable draft on the same page, in about a minute
-in a normal case. Reuse the existing pack builder, calculations, adjustment matrix and print layout
-rather than building a second system.
+- /owner: a secret page behind a password checked on the server. It isn't linked anywhere or listed in
+  robots.txt or the sitemap.
+- Two ways to start: a customer report link, or direct entry.
+- Each sale is assessed on its merits. The checker's middle 50% is shown for reference only.
+- The full list of sales the search returned, with reasons for any set aside.
+- CSV export, and manual entry of completed LonRes sales.
+- Provisional adjustments; missing facts in plain English; a number for a scenario only once its
+  assumption and basis are stated.
+- DRAFT on every page until Simon signs off. Editing after sign-off returns the pack to draft, and the
+  signed-off copy is kept.
+- Drafts are saved online. Preview drafts are kept separate from live drafts. Drafts saved in a browser
+  by the old builder can be imported.
+- The old /pack-builder and /sample-approve addresses move behind the same sign-in.
+- The raw sales and address files (/data/sales, /data/addr), which are public today, are locked so only
+  the site's own functions can read them. The checker and customer reports keep working.
+- April 2026 for mansion tax packs.
+- Acquisition research (e.g. Abingdon Road, once the flat and postcode are confirmed): direct entry plus
+  CSV, with the valuation date for that instruction stated. No pack PDF for other dates in this version.
 
-FACTS CHECKED IN THE CODE THAT SHAPE THIS BRIEF
+PART B. NEW IN v4: ONE VOICE REQUEST TO A DRAFT PDF BY EMAIL
 
-- The pack builder (/pack-builder.html, site/assets/pack.js) already does most of the work:
-  - It loads sales from /api/report?full=1.
-  - It applies the April 2026 time adjustment and the adjustment matrix ("Use it").
-  - It has the four fact labels.
-  - It already flags property adjustments of 10% or more, sales more than 25% larger or smaller
-    than the subject home, sales after the valuation date, and fewer than 5 sales.
-  - It prints as DRAFT until sign-off.
-- Search results: the full search returns up to 80 sales, each marked whether it is in the middle
-  50% used for the free estimate.
-  - There is no recorded reason why other sales were set aside. Reasons will have to be added (see
-    section 2).
-- Floor areas come from EPC records (and Land Registry addresses), but no per-sale source field is
-  stored. The source will have to be added.
-- Direct entry is possible: the checker can already list the addresses in a postcode, with their
-  EPC floor area and floor level, and run an estimate without a signup or an email.
-- Current weaknesses:
-  - The reviewer key (PACK_KEY) is typed into the browser and stored there (localStorage "pack:key").
-  - Drafts are kept only in that browser, so they can't be reopened on another device.
-  - The builder page loads Cloudflare Web Analytics.
-  - The existing hidden pages (/pack-builder and /sample-approve) are named in the public
-    robots.txt file, so anyone reading that file can see that they exist.
-  - Anyone can open those pages. Only the data behind them is protected (by PACK_KEY).
+What Simon does (iPhone):
+1. Say: "Hey Siri, Evidence Pack."
+2. Siri asks: "Which property?" Simon says, for example: "Flat 2, 24 Example Road, SW8 1AA. Three-bedroom
+   first-floor flat, 1,250 square feet, dated condition."
+3. Siri replies within a few seconds: "Started: Flat 2, 24 Example Road, SW8 1AA. The draft will be in
+   your email in about a minute."
+   - If the address is ambiguous, or an essential detail is missing or conflicts with a record, Siri asks
+     one short question instead, for example: "I found Flat 2 and Flat 2A at 24 Example Road. Which one?"
+     or "The energy certificate says 1,180 sq ft. Use 1,250 from you, or 1,180?" Simon answers by voice.
+4. The email arrives at the fixed owner address with:
+   - the draft PDF attached (DRAFT on every page);
+   - a short summary: the indicative range, the number of credible sales, and any weak-evidence flags
+     and facts to confirm;
+   - a link to the editable draft in /owner (it opens only after signing in), where Simon reviews every
+     sale returned, adds LonRes evidence and signs off.
 
-1. TWO WAYS TO START
+Why an iPhone Shortcut, not the Claude app (checked):
+- The Claude app on the iPhone can't call a private website directly. It reaches outside services only
+  through connectors.
+- A custom connector for the site would need its own OAuth sign-in service: more work, and a second way
+  into the owner's area. Proposed for a later version if wanted.
+- A Claude Code session could call the site, but it starts slowly and isn't made for a one-line daily
+  request.
+- A Siri Shortcut is built into the iPhone, works by voice, and keeps its access key on the phone.
+- Simon can still ask Claude about a pack afterwards: the PDF is in Gmail, which Claude can read through
+  the existing Gmail connector.
 
-a) Customer report link
-- Paste the link. The page loads the subject property and every comparable sale the report's search
-  returned.
+What happens on the site (target: about a minute in a normal case):
+1. The Shortcut sends the dictated text to a new private address, /api/owner/voice.
+   - It sends a voice key that lives only in the Shortcut on Simon's iPhone and in Netlify. It never goes
+     in chat.
+   - The voice key can only start a draft. It can't read drafts, sales or customer data.
+   - Requests are rate-limited (for example, 10 an hour).
+2. The site reads the dictation: postcode, flat or house number, street, type, bedrooms, floor, floor
+   area and condition. This uses fixed rules, not AI (decision 3), with a follow-up question where
+   something is unclear.
+3. It matches the exact address against the energy certificate and Land Registry address lists, and
+   compares the dictated floor area and floor with the energy certificate.
+4. It records the facts:
+   - Floor area: Simon's figure with source "Owner statement (dictated)", plus the energy certificate
+     figure where one exists, and any difference flagged.
+   - Condition: recorded as Simon's statement (for example, "dated", which the adjustment table calls
+     "Dated but sound", −5%), flagged "condition at April 2026 to be confirmed".
+5. It runs the same evidence search, shortlist, adjustment matrix and provisional adjustments as /owner,
+   and saves the draft in the same online drafts list.
+6. It produces the PDF with the same pack layout as /owner (a browser on the server prints the same
+   page), with DRAFT on every page.
+7. It emails the PDF only to OWNER_EMAIL, an address fixed in Netlify's settings. Nothing in the
+   dictation can change the recipient, and no customer is ever emailed.
+8. If anything fails (no data for the postcode, not enough sales, an email error), Simon gets an email
+   saying what happened, and the draft link where there is one.
 
-b) Direct entry (own research, e.g. an acquisition such as Abingdon Road)
-- Enter the postcode, then choose the exact address or flat number from the list (or type it if it
-  isn't listed). Then enter the property type and floor area.
-- Before the draft is created, a confirmation step shows:
-  - the exact property matched;
-  - the floor area and its source: EPC (with date if known), the owner's measured plan, or entered
-    by Simon;
-  - the floor level and tenure, where known.
-- Direct entry creates no customer signup, no Netlify form submission, no MailerLite contact and no
-  email. It is labelled "Owner research" in the saved list.
+Sign-off stays in /owner. The emailed PDF is always a draft.
 
-2. SHORTLIST, AND THE FULL LIST
+PART C. WHAT REUSES THE EXISTING BUILDER, AND WHAT IS NEW
 
-- Suggest 5 to 8 sales where the evidence supports that many. Each suggested sale shows why it was
-  chosen: distance or same street/building, sale date, size difference, same type and tenure, and
-  floor level.
-- Give access to the full list returned by the search, including sales set aside, each with a
-  reason where known. Example reasons: outside the middle 50%, different property type, no floor
-  area, size more than 25% different, sold long before or after April 2026, new build.
-- Simon can add, remove and reweight sales (High / Medium / Low, as now).
-- With only 3 or 4 credible sales, use them and show a clear "limited evidence" flag in the draft.
-  With fewer than 3, the draft gives no value range and says the evidence is insufficient.
-- Export the complete sales list (CSV, opens in Excel) for cross-checking against LonRes.
-- Add LonRes sales by hand: address, date, price, floor area, area source and a note. Each one is
-  recorded as "Source: LonRes (entered by Simon)" in the pack. These must be completed sales, never
-  asking prices.
+Reused as it is:
+- The checker's estimate and the sales data (estimate.mjs).
+- The adjustment matrix (adjustments.js).
+- The pack layout and calculations (pack.js renderDoc and calc).
+- The address lists (energy certificate and Land Registry).
+- The time adjustment to April 2026.
+- The fact-source labels.
 
-3. CALCULATIONS AUTOMATED, JUDGEMENT CALLS FLAGGED
+Reused from the v3 build (written; testing next):
+- Owner sign-in and the private pages.
+- The evidence search with reasons and a shortlist.
+- Online drafts and preview separation.
+- Provisional adjustments, missing facts, the LonRes form and the CSV.
+- The locked data files.
 
-- For each selected sale, show:
-  - the original completion date and price;
-  - the floor area and its source;
-  - the April 2026 time adjustment and resulting price;
-  - any separate property adjustments, each with its reason.
-- Reuse the existing adjustment matrix. Every suggestion is marked "Provisional" until Simon
-  reviews it and ticks it as accepted.
-- Keep the existing flags (adjustments of 10% or more, sales after the valuation date, large size
-  differences, too few sales).
-- Unknown facts (condition, lease length, floor level, etc.) are marked To be confirmed. For each,
-  the draft shows whether the gap could move the value range, for example "lease length unknown:
-  could reduce the range by up to X% if under 80 years", using the matrix figures.
+New for v4:
+1. /api/owner/voice:
+   - reads the dictation;
+   - matches the address;
+   - asks the follow-up question;
+   - checks the voice key and the rate limit;
+   - starts the job.
+2. Server-side draft creation: the same steps as "Create draft pack", run without Simon at the screen.
+3. Server-side PDF:
+   - a headless browser (Chromium for serverless) opens the draft with a one-time key and prints it to
+     PDF in a background function;
+   - the existing layout is reused, not redrawn.
+4. Email with the attachment, to OWNER_EMAIL only (decision 2).
+5. The iPhone Shortcut:
+   - Claude supplies it with step-by-step set-up (about 5 minutes on the phone);
+   - Simon pastes the voice key into it on his phone, never in chat.
+6. Job status and failure emails.
 
-4. EDITABLE DRAFT AND SIGN-OFF
+PART D. SECURITY
 
-- Pre-fill sourced property facts with the existing labels: Owner statement, Verified, Public data,
-  To be confirmed.
-- Draft the indicative range and the evidence summary when the data supports them.
-- The final conclusion and sign-off are left to Simon.
-- Save and reopen a draft.
-- Draft PDFs are clearly marked DRAFT on every page. After sign-off, download the final PDF.
-- Editing a signed-off pack returns it to draft until Simon approves it again. The earlier signed-off
-  version is kept for reference.
-- First version uses the existing Print / Save as PDF, provided it produces a clean pack (checked in
-  testing on desktop and iPhone). If it doesn't, Claude reports back before building a server PDF.
-- Email-to-self stays optional and is not in the first version.
+- Passwords and keys are set by Simon in Netlify (OWNER_PASSWORD, OWNER_VOICE_KEY and the email sending
+  credential) and never typed into chat.
+- OWNER_EMAIL is fixed in Netlify. The voice request can't name a recipient.
+- The voice key can only start a draft for Simon's own inbox. If it leaked, the worst case is unwanted
+  draft emails to Simon (rate-limited); it can't read any data. It can be changed in Netlify and the
+  Shortcut at any time.
+- The PDF is attached to the email. The draft link in the email still needs the /owner sign-in.
+- Previews use separate drafts. A preview sends email only to OWNER_EMAIL, marked "PREVIEW" in the
+  subject.
 
-5. GENUINELY PRIVATE ACCESS (A SECRET OWNER'S AREA)
+PART E. DEMONSTRATION ON THE DEPLOY PREVIEW (BEFORE ANY LIVE PUBLISH)
 
-- Secret page: the owner's page is not linked from anywhere on the site, not in the sitemap and
-  not in robots.txt. Search engines are kept out with a noindex header and meta tag instead, so its
-  address is not published anywhere.
-- Sign-in (agreed): a password checked on the server. Signing in gives a secure, short-lived
-  sign-in cookie, and repeated wrong attempts are blocked. Anyone who finds the address sees only a
-  sign-in box; nothing else loads until Simon has signed in.
-- The page and the full comparable-sales request require Simon to be signed in, and the server
-  checks this on every request.
-- One private area: the existing pack builder (/pack-builder) and sample approval page
-  (/sample-approve) move behind the same sign-in. Their entries are removed from robots.txt, and
-  they get the noindex header instead. There is then one private area, with no hidden pages left
-  open.
-- PACK_KEY stays on the server only. The browser-stored key is removed, and the existing builder
-  clears any saved copy.
-- The owner page is noindex and not linked, and it loads no analytics.
-- Report links and customer details are kept out of analytics and server logs (the existing logs
-  will be checked and cleaned where needed).
-- Where drafts are saved: in Netlify Blobs (private storage attached to the site), not in the
-  browser. Simon can reopen them on any device after signing in. Existing drafts in a browser can be
-  imported once.
-- Confirm that the public checker and the customer report still work as before, and that the free
-  report still never shows the comparable sales.
+Using a synthetic case (name "TEST", a test property with real public sales data):
+1. Voice request to the preview's /api/owner/voice with the Shortcut (preview address and key), timed
+   from request to email.
+2. An ambiguous address (follow-up question answered), and a floor area that conflicts with the energy
+   certificate.
+3. A case with too few credible sales: the PDF says the evidence is insufficient, with no range.
+4. The emailed PDF: DRAFT on every page, the shortlist with reasons, original prices, April 2026 time
+   adjustments and provisional adjustments.
+5. The link opens the draft in /owner after signing in. Add a LonRes sale, export the CSV, sign off,
+   download the final PDF, then edit it and see it return to draft.
+6. The v3 checks:
+   - signed-out access refused for /owner, /owner.html, /pack-builder(.html), /sample-approve(.html),
+     /api/owner/*, /api/report?full=1 and /data/sales/*;
+   - the voice key refused for anything but starting a draft;
+   - the public checker and customer reports still working;
+   - an old browser draft imported.
+7. Simon tests the whole workflow on his iPhone before approving publication.
 
-6. WHAT A SUCCESSFUL PREVIEW LOOKS LIKE
+PART F. DECISIONS FOR SIMON
 
-On the free deploy preview (no live publish), Claude demonstrates with screenshots and sample PDFs:
-- a pack started from a customer report link (a TEST report);
-- a pack started by direct entry, with no signup, contact or email created (checked in Netlify
-  Forms and MailerLite);
-- a case with too few credible comparables, showing the flag or no range;
-- editing the shortlist (add, remove, reweight, add a LonRes sale), and exporting the full list;
-- saving a draft, reopening it on a second device, signing off, downloading a readable final PDF,
-  then editing it and seeing it return to draft;
-- signed-out users, and requests without the sign-in, being refused for the owner page, the pack
-  builder, the sample approval page and the full sales data;
-- the owner's area not appearing in robots.txt, the sitemap or any link on the site;
-- sample approvals still working after signing in;
-- the public checker and customer report still working.
-Tests are simulated in Playwright (iPhone, iPad, desktop), plus Simon's real iPhone before approval.
-Simon approves the preview before anything is published (one live publish, 15 Netlify credits).
+1. The Shortcut approach for v1 (recommended), with a Claude connector considered later.
+2. How the email is sent:
+   (a) Recommended: Gmail with an app password, sending from and to Simon's own Gmail. No new account or
+       DNS changes. Simon creates the app password in his Google account and enters it in Netlify.
+   (b) A sending service such as Resend or Postmark, from an address at challengemansiontax.co.uk. It
+       needs an account and DNS records on the domain.
+3. Reading the dictation:
+   (a) Recommended: fixed rules plus a follow-up question. No extra cost, and nothing is sent to an AI
+       service.
+   (b) Claude through the Anthropic API, for freer phrasing. It needs an API key in Netlify and costs a
+       fraction of a penny per request.
+4. Netlify plan check:
+   - the background function and the headless browser need a function time limit of more than
+     10 seconds;
+   - Claude will check the plan's limits on the preview and report back before relying on it;
+   - if they aren't available, the fallback is a PDF drawn with the existing PDF library, which is more
+     work and a separate layout to maintain.
+5. The owner email address (set by Simon in Netlify as OWNER_EMAIL).
 
-WHAT CLAUDE MAY DO ALONE
+PART G. WHAT CLAUDE MAY DO ALONE / WHAT NEEDS APPROVAL
 
-- Work on a branch with a pull request and the free preview.
-- Create TEST cases.
-
-WHAT NEEDS SIMON'S APPROVAL
-
-- This brief.
-- Publishing to the live site.
-- Adding email-to-self later.
-
-DECISIONS FOR SIMON BEFORE BUILDING
-
-1. Sign-in method: DECIDED. A password checked by the site, with a secure cookie.
-   Simon sets the password himself in Netlify; it is never typed into chat.
-2. Owner's page address: /owner, or a less obvious name of Simon's choice.
-3. Abingdon Road: confirm the postcode, so it can be used as a test case.
-4. LonRes: is CSV export enough for cross-checking, or do you also want a CSV import of LonRes sales?
+- May do alone:
+  - work on the branch, the pull request and the free preview;
+  - send test emails only to OWNER_EMAIL from the preview.
+- Needs approval:
+  - this brief;
+  - the decisions above;
+  - publishing to the live site (15 Netlify credits).
 
 DELIVERABLES
 
 - Pull request and preview link.
-- A test report (passed / failed, simulated vs real device).
-- Screenshots and sample PDFs.
+- The Shortcut with set-up steps.
+- A test report (passed / failed, simulated vs on Simon's iPhone).
+- Sample PDFs and screenshots.
 - The code changes as text, for ChatGPT review.
 - Updated docs/evidence-pack.md.
