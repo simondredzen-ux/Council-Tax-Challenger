@@ -14,7 +14,7 @@ Nothing else has been changed. The ad texts and negative keywords below are draf
 - **The 57 guide sign-ups:**
   - 53 are tests or Simon's own entries.
   - 4 come from 3 people (5 Nov, 7 Nov, and one person twice on 16 Nov), all arriving direct, none from ads.
-  - One of those addresses may be someone Simon knows.
+  - Simon confirmed on 19 Nov that all three are his brother or friends. **So there are no genuine leads yet.**
 
 ## The 44 clicks by search intent
 
