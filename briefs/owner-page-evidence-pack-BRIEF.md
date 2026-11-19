@@ -1,11 +1,11 @@
-BRIEF FOR APPROVAL (v2): PRIVATE OWNER'S PAGE FOR DRAFT EVIDENCE PACKS
+BRIEF FOR APPROVAL (v3): PRIVATE OWNER'S PAGE FOR DRAFT EVIDENCE PACKS
 
 Challenge Mansion Tax (challengemansiontax.co.uk, repository simondredzen-ux/Mansion-Tax-, Netlify).
-Revised 19 Nov 2026 from Simon's instructions. Nothing is built until Simon approves this brief.
+Revised 19 Nov 2026 from Simon's instructions (v3: secret owner's area and sign-in method agreed). Nothing is built until Simon approves this brief.
 
 GOAL
 
-One private owner's page. Simon either pastes an existing customer report link or enters a property
+One secret, private owner's page that no visitor sees, which Simon signs in to. Simon either pastes an existing customer report link or enters a property
 directly, clicks "Create draft pack", and sees an editable draft on the same page, in about a minute
 in a normal case. Reuse the existing pack builder, calculations, adjustment matrix and print layout
 rather than building a second system.
@@ -31,6 +31,9 @@ FACTS CHECKED IN THE CODE THAT SHAPE THIS BRIEF
   - The reviewer key (PACK_KEY) is typed into the browser and stored there (localStorage "pack:key").
   - Drafts are kept only in that browser, so they can't be reopened on another device.
   - The builder page loads Cloudflare Web Analytics.
+  - The existing hidden pages (/pack-builder and /sample-approve) are named in the public
+    robots.txt file, so anyone reading that file can see that they exist.
+  - Anyone can open those pages. Only the data behind them is protected (by PACK_KEY).
 
 1. TWO WAYS TO START
 
@@ -94,11 +97,20 @@ b) Direct entry (own research, e.g. an acquisition such as Abingdon Road)
   testing on desktop and iPhone). If it doesn't, Claude reports back before building a server PDF.
 - Email-to-self stays optional and is not in the first version.
 
-5. GENUINELY PRIVATE ACCESS
+5. GENUINELY PRIVATE ACCESS (A SECRET OWNER'S AREA)
 
-- Owner login: the page and the full comparable-sales request require Simon to be signed in.
-  Proposed method (decision 1 below): a password checked on the server, giving a secure,
-  short-lived sign-in cookie, with repeated wrong attempts blocked.
+- Secret page: the owner's page is not linked from anywhere on the site, not in the sitemap and
+  not in robots.txt. Search engines are kept out with a noindex header and meta tag instead, so its
+  address is not published anywhere.
+- Sign-in (agreed): a password checked on the server. Signing in gives a secure, short-lived
+  sign-in cookie, and repeated wrong attempts are blocked. Anyone who finds the address sees only a
+  sign-in box; nothing else loads until Simon has signed in.
+- The page and the full comparable-sales request require Simon to be signed in, and the server
+  checks this on every request.
+- One private area: the existing pack builder (/pack-builder) and sample approval page
+  (/sample-approve) move behind the same sign-in. Their entries are removed from robots.txt, and
+  they get the noindex header instead. There is then one private area, with no hidden pages left
+  open.
 - PACK_KEY stays on the server only. The browser-stored key is removed, and the existing builder
   clears any saved copy.
 - The owner page is noindex and not linked, and it loads no analytics.
@@ -120,8 +132,10 @@ On the free deploy preview (no live publish), Claude demonstrates with screensho
 - editing the shortlist (add, remove, reweight, add a LonRes sale), and exporting the full list;
 - saving a draft, reopening it on a second device, signing off, downloading a readable final PDF,
   then editing it and seeing it return to draft;
-- signed-out users, and requests without the sign-in, being refused for the owner page and the full
-  sales data;
+- signed-out users, and requests without the sign-in, being refused for the owner page, the pack
+  builder, the sample approval page and the full sales data;
+- the owner's area not appearing in robots.txt, the sitemap or any link on the site;
+- sample approvals still working after signing in;
 - the public checker and customer report still working.
 Tests are simulated in Playwright (iPhone, iPad, desktop), plus Simon's real iPhone before approval.
 Simon approves the preview before anything is published (one live publish, 15 Netlify credits).
@@ -134,18 +148,16 @@ WHAT CLAUDE MAY DO ALONE
 WHAT NEEDS SIMON'S APPROVAL
 
 - This brief.
-- The sign-in method.
 - Publishing to the live site.
 - Adding email-to-self later.
 
 DECISIONS FOR SIMON BEFORE BUILDING
 
-1. Sign-in method:
-   (a) a password checked by the site, with a secure cookie (recommended: free and works on any
-       device); or
-   (b) Netlify's own password protection, which may need a paid Netlify plan.
-2. Abingdon Road: confirm the postcode, so it can be used as a test case.
-3. LonRes: is CSV export enough for cross-checking, or do you also want a CSV import of LonRes sales?
+1. Sign-in method: DECIDED. A password checked by the site, with a secure cookie.
+   Simon sets the password himself in Netlify; it is never typed into chat.
+2. Owner's page address: /owner, or a less obvious name of Simon's choice.
+3. Abingdon Road: confirm the postcode, so it can be used as a test case.
+4. LonRes: is CSV export enough for cross-checking, or do you also want a CSV import of LonRes sales?
 
 DELIVERABLES
 
