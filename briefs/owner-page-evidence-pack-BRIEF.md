@@ -1,110 +1,156 @@
-# Brief for review: Owner's page to create an Evidence Pack automatically
+BRIEF FOR APPROVAL (v2): PRIVATE OWNER'S PAGE FOR DRAFT EVIDENCE PACKS
 
-Prepared by Claude on 19 Nov 2026 for ChatGPT to review before anything is built.
-Website: challengemansiontax.co.uk (repository simondredzen-ux/Mansion-Tax-, hosted on Netlify).
+Challenge Mansion Tax (challengemansiontax.co.uk, repository simondredzen-ux/Mansion-Tax-, Netlify).
+Revised 19 Nov 2026 from Simon's instructions. Nothing is built until Simon approves this brief.
 
-## 1. Goal
+GOAL
 
-Give Simon one private owner's page where he can enter a property (or paste a customer's report link),
-press one button, and get a complete draft Property Value Evidence Pack as a PDF in about a minute.
-He then checks it, signs it off and downloads it (or emails it to himself). Today this takes many
-manual steps in the pack builder.
+One private owner's page. Simon either pastes an existing customer report link or enters a property
+directly, clicks "Create draft pack", and sees an editable draft on the same page, in about a minute
+in a normal case. Reuse the existing pack builder, calculations, adjustment matrix and print layout
+rather than building a second system.
 
-## 2. Current facts (checked in the code on 19 Nov 2026)
+FACTS CHECKED IN THE CODE THAT SHAPE THIS BRIEF
 
-- **Pack builder:** `/pack-builder.html` with `site/assets/pack.js` (585 lines). It's internal, not linked and not indexed. It runs entirely in the browser.
-- **How a pack is made now:**
-  1. Paste a customer's report link.
-  2. The builder loads up to 80 comparable sales from `/api/report?full=1`, which needs the `PACK_KEY` in the `x-pack-key` header.
-  3. Fill in the property profile by hand, marking each fact as Owner statement, Verified, Public data or To be confirmed.
-  4. Pick 5–8 comparables by hand, and press "Use it" on each for the standard adjustment (docs/adjustment-matrix.md).
-  5. Add the 2026 condition items, rate the evidence, write the conclusion and sign off.
-  6. Use the browser's Print / save PDF.
-- **Saving:** work is saved only in that browser (localStorage), plus a downloadable JSON case file. Photos can fill the browser's storage.
-- **Getting a report link:**
-  - The customer's link comes from their checker result.
-  - For Simon's own home, he has to run the public checker himself and fish the link out of the email or MailerLite.
-  - The checker API (`/api/check`) can already produce an estimate directly from postcode, type, area, condition, lease, floor and address.
-- **Existing building blocks:**
-  - Netlify Blobs is already used (stores "checks" and "sample-requests").
-  - pdf-lib already builds PDFs on the server (personalised sample pack, report PDF).
-  - `/sample-approve.html` already uses the same PACK_KEY pattern for a private reviewer page.
-- **Email:** MailerLite is live (the docs still say EmailOctopus in places). There is no transactional email service for sending one-off emails.
-- **Publishing:** previews are free; each live publish costs 15 Netlify credits. Nothing is published without Simon's approval.
-- **Pack status:** a pack stays marked DRAFT until a named reviewer approves it. Rules: completed sales only, every adjustment needs a reason, and owner statements are kept separate from verified facts.
+- The pack builder (/pack-builder.html, site/assets/pack.js) already does most of the work:
+  - It loads sales from /api/report?full=1.
+  - It applies the April 2026 time adjustment and the adjustment matrix ("Use it").
+  - It has the four fact labels.
+  - It already flags property adjustments of 10% or more, sales more than 25% larger or smaller
+    than the subject home, sales after the valuation date, and fewer than 5 sales.
+  - It prints as DRAFT until sign-off.
+- Search results: the full search returns up to 80 sales, each marked whether it is in the middle
+  50% used for the free estimate.
+  - There is no recorded reason why other sales were set aside. Reasons will have to be added (see
+    section 2).
+- Floor areas come from EPC records (and Land Registry addresses), but no per-sale source field is
+  stored. The source will have to be added.
+- Direct entry is possible: the checker can already list the addresses in a postcode, with their
+  EPC floor area and floor level, and run an estimate without a signup or an email.
+- Current weaknesses:
+  - The reviewer key (PACK_KEY) is typed into the browser and stored there (localStorage "pack:key").
+  - Drafts are kept only in that browser, so they can't be reopened on another device.
+  - The builder page loads Cloudflare Web Analytics.
 
-## 3. Proposed solution
+1. TWO WAYS TO START
 
-A new private page, `/owner` (not linked, `noindex`, needs PACK_KEY), with three parts.
+a) Customer report link
+- Paste the link. The page loads the subject property and every comparable sale the report's search
+  returned.
 
-**A. Create a pack (one form, one button)**
-- **Input:** either paste a report link, or type the address details (postcode, then pick the address from the list, property type, floor area, condition, lease and floor), the same fields as the checker. Plus pack type: "2026 Evidence File" or "Challenge Pack" (the Challenge Pack also needs the official value).
-- **The "Create pack" button runs a new server function, `/api/owner-pack`, which:**
-  1. Runs the estimate (or reads it from the report link) and loads all comparables.
-  2. Automatically selects the best 5–8 comparables by closeness in location, sale date, size and property type, using completed sales only.
-  3. Applies the standard adjustment table, recording the reason for each adjustment.
-  4. Fills in the property profile, marking checker data as "Public data" and anything not known as "To be confirmed".
-  5. Proposes an evidence rating and a draft conclusion from fixed wording. There is no free-written AI text.
-  6. Builds the PDF on the server, watermarked DRAFT.
-  7. Saves the case in Netlify Blobs (store "owner-packs") so it isn't tied to one browser.
-- **Output:** the PDF on screen with a Download button, and a link to open the case in the existing pack builder for any fine-tuning.
+b) Direct entry (own research, e.g. an acquisition such as Abingdon Road)
+- Enter the postcode, then choose the exact address or flat number from the list (or type it if it
+  isn't listed). Then enter the property type and floor area.
+- Before the draft is created, a confirmation step shows:
+  - the exact property matched;
+  - the floor area and its source: EPC (with date if known), the owner's measured plan, or entered
+    by Simon;
+  - the floor level and tenure, where known.
+- Direct entry creates no customer signup, no Netlify form submission, no MailerLite contact and no
+  email. It is labelled "Owner research" in the saved list.
 
-**B. Approve**
-- Simon reviews the pack, then enters his name, ticks the two checks and presses Approve.
-- The final PDF is made without the DRAFT mark.
-- Approval is always by hand; the page never approves automatically.
+2. SHORTLIST, AND THE FULL LIST
 
-**C. Past packs**
-- A list of saved cases (date, address, status), each with Download and Open buttons.
+- Suggest 5 to 8 sales where the evidence supports that many. Each suggested sale shows why it was
+  chosen: distance or same street/building, sale date, size difference, same type and tenure, and
+  floor level.
+- Give access to the full list returned by the search, including sales set aside, each with a
+  reason where known. Example reasons: outside the middle 50%, different property type, no floor
+  area, size more than 25% different, sold long before or after April 2026, new build.
+- Simon can add, remove and reweight sales (High / Medium / Low, as now).
+- With only 3 or 4 credible sales, use them and show a clear "limited evidence" flag in the draft.
+  With fewer than 3, the draft gives no value range and says the evidence is insufficient.
+- Export the complete sales list (CSV, opens in Excel) for cross-checking against LonRes.
+- Add LonRes sales by hand: address, date, price, floor area, area source and a note. Each one is
+  recorded as "Source: LonRes (entered by Simon)" in the pack. These must be completed sales, never
+  asking prices.
 
-**Sending:**
-- **Phase 1:** download only, and Simon emails it himself.
-- **Phase 2 (optional, separate approval):** an "Email to me" button that sends the PDF only to a fixed owner address set in Netlify (`OWNER_EMAIL`). This needs a transactional email service (for example Resend or Postmark). It never sends to a customer.
+3. CALCULATIONS AUTOMATED, JUDGEMENT CALLS FLAGGED
 
-## 4. Tasks (for Claude, after this brief is approved)
+- For each selected sale, show:
+  - the original completion date and price;
+  - the floor area and its source;
+  - the April 2026 time adjustment and resulting price;
+  - any separate property adjustments, each with its reason.
+- Reuse the existing adjustment matrix. Every suggestion is marked "Provisional" until Simon
+  reviews it and ticks it as accepted.
+- Keep the existing flags (adjustments of 10% or more, sales after the valuation date, large size
+  differences, too few sales).
+- Unknown facts (condition, lease length, floor level, etc.) are marked To be confirmed. For each,
+  the draft shows whether the gap could move the value range, for example "lease length unknown:
+  could reduce the range by up to X% if under 80 years", using the matrix figures.
 
-1. Move the pack calculations out of `pack.js` into a shared module, so the browser builder and the new server function give identical figures.
-2. Write the automatic comparable selection and adjustment rules, and test them against the Chelsea example pack and 3 other test properties.
-3. Build `/api/owner-pack` (create, list, approve), protected by PACK_KEY, with cases saved in Netlify Blobs.
-4. Build the server-side PDF to match the current printed layout, including the DRAFT watermark.
-5. Build `/owner.html` (works on a phone), and let the pack builder open a saved case.
-6. Update `docs/evidence-pack.md` and correct its EmailOctopus mentions to MailerLite.
+4. EDITABLE DRAFT AND SIGN-OFF
 
-## 5. What Claude may do alone
+- Pre-fill sourced property facts with the existing labels: Owner statement, Verified, Public data,
+  To be confirmed.
+- Draft the indicative range and the evidence summary when the data supports them.
+- The final conclusion and sign-off are left to Simon.
+- Save and reopen a draft.
+- Draft PDFs are clearly marked DRAFT on every page. After sign-off, download the final PDF.
+- Editing a signed-off pack returns it to draft until Simon approves it again. The earlier signed-off
+  version is kept for reference.
+- First version uses the existing Print / Save as PDF, provided it produces a clean pack (checked in
+  testing on desktop and iPhone). If it doesn't, Claude reports back before building a server PDF.
+- Email-to-self stays optional and is not in the first version.
 
-- Work on a branch and pull request, and test on the free deploy preview.
-- Create test packs, with addresses marked "TEST".
+5. GENUINELY PRIVATE ACCESS
 
-## 6. What needs Simon's approval
+- Owner login: the page and the full comparable-sales request require Simon to be signed in.
+  Proposed method (decision 1 below): a password checked on the server, giving a secure,
+  short-lived sign-in cookie, with repeated wrong attempts blocked.
+- PACK_KEY stays on the server only. The browser-stored key is removed, and the existing builder
+  clears any saved copy.
+- The owner page is noindex and not linked, and it loads no analytics.
+- Report links and customer details are kept out of analytics and server logs (the existing logs
+  will be checked and cleaned where needed).
+- Where drafts are saved: in Netlify Blobs (private storage attached to the site), not in the
+  browser. Simon can reopen them on any device after signing in. Existing drafts in a browser can be
+  imported once.
+- Confirm that the public checker and the customer report still work as before, and that the free
+  report still never shows the comparable sales.
 
-- Publishing to the live site (15 Netlify credits).
-- Phase 2 email sending (choice of email service, the cost and the sender address).
-- The automatic selection and adjustment rules, before any pack goes to a paying customer.
+6. WHAT A SUCCESSFUL PREVIEW LOOKS LIKE
 
-## 7. Testing required
+On the free deploy preview (no live publish), Claude demonstrates with screenshots and sample PDFs:
+- a pack started from a customer report link (a TEST report);
+- a pack started by direct entry, with no signup, contact or email created (checked in Netlify
+  Forms and MailerLite);
+- a case with too few credible comparables, showing the flag or no range;
+- editing the shortlist (add, remove, reweight, add a LonRes sale), and exporting the full list;
+- saving a draft, reopening it on a second device, signing off, downloading a readable final PDF,
+  then editing it and seeing it return to draft;
+- signed-out users, and requests without the sign-in, being refused for the owner page and the full
+  sales data;
+- the public checker and customer report still working.
+Tests are simulated in Playwright (iPhone, iPad, desktop), plus Simon's real iPhone before approval.
+Simon approves the preview before anything is published (one live publish, 15 Netlify credits).
 
-- **Same result both ways:** the same case gives the same figures in the old builder and in the new automatic pack.
-- **Rules are followed:** no asking prices; every adjustment has a reason; DRAFT appears until approved; and with fewer than 3 usable comparables the pack says "insufficient evidence" instead of inventing a range.
-- **Security:** the page and API refuse requests without PACK_KEY; `/owner` is `noindex`; and the free report still never shows the comparable sales.
-- **Devices:** iPhone, iPad and desktop (simulated in Playwright), plus Simon's real iPhone before approval.
-- **Reporting:** results are listed as passed or failed, with screenshots and 2 sample PDFs.
+WHAT CLAUDE MAY DO ALONE
 
-## 8. Deliverables
+- Work on a branch with a pull request and the free preview.
+- Create TEST cases.
 
-- A pull request with a deploy-preview link.
-- A test report, sample PDFs and screenshots.
-- The code changes as text (for ChatGPT review).
-- Updated docs.
+WHAT NEEDS SIMON'S APPROVAL
 
-## 9. Success measure
+- This brief.
+- The sign-in method.
+- Publishing to the live site.
+- Adding email-to-self later.
 
-- Simon can produce a correct draft pack for any English property in under 2 minutes, from his phone or a computer, with no copying of links and no manual comparable picking.
-- He can approve and download the final PDF in 1 more minute.
+DECISIONS FOR SIMON BEFORE BUILDING
 
-## 10. Questions for ChatGPT to review
+1. Sign-in method:
+   (a) a password checked by the site, with a secure cookie (recommended: free and works on any
+       device); or
+   (b) Netlify's own password protection, which may need a paid Netlify plan.
+2. Abingdon Road: confirm the postcode, so it can be used as a test case.
+3. LonRes: is CSV export enough for cross-checking, or do you also want a CSV import of LonRes sales?
 
-1. Are automatic comparable selection and standard adjustments safe enough for a paid product, given that a person always approves? What should force the pack to "insufficient evidence"?
-2. Should the PDF be built on the server (consistent and saved) or by printing from the browser as now (simpler, but tied to one browser)? Claude recommends the server.
-3. Is PACK_KEY enough protection for a page that can produce paid packs, or should it have its own `OWNER_KEY` or Netlify password protection?
-4. Is the Phase 2 "Email to me" worth a new email service, or is downloading enough?
-5. Anything missing from the property profile that the pack needs and the checker doesn't collect, such as the condition photos and lease documents?
+DELIVERABLES
+
+- Pull request and preview link.
+- A test report (passed / failed, simulated vs real device).
+- Screenshots and sample PDFs.
+- The code changes as text, for ChatGPT review.
+- Updated docs/evidence-pack.md.
