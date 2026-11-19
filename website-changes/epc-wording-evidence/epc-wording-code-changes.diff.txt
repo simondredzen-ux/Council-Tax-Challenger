@@ -1,0 +1,400 @@
+diff --git a/netlify/lib/personal-pdf.mjs b/netlify/lib/personal-pdf.mjs
+index e0c9fe8..26e1a6a 100644
+--- a/netlify/lib/personal-pdf.mjs
++++ b/netlify/lib/personal-pdf.mjs
+@@ -347,7 +347,7 @@ export async function reportPdf(r, links, when = new Date()) {
+       const idx = "brought to April 2026 prices with our own house price index in London (the official UK House Price Index elsewhere)";
+       if (i.area && r.ppsf) {
+         const ar = `${Number(i.area).toLocaleString("en-GB")} ${i.unit === "sqm" ? "sq m" : "sq ft"}`;
+-        text(`Floor area. This estimate applies the typical price per sq ft of nearby sales recorded by HM Land Registry, ${idx}, to a floor area of ${ar}, taken from your home's energy certificate or as you entered it. If the true floor area is different, the estimate changes roughly in proportion: 10% less floor area means an estimate about 10% lower. Measure your home to check.`, { size: 9.5 });
++        text(`Floor area. This estimate applies the typical price per sq ft of nearby sales recorded by HM Land Registry, ${idx}, to a floor area of ${ar}, taken from available property records or as you entered it. If the true floor area is different, the estimate changes roughly in proportion: 10% less floor area means an estimate about 10% lower. Measure your home to check.`, { size: 9.5 });
+       } else {
+         text(`Floor area. We didn't have a floor area for your home, so this estimate is based on the sale prices of similar homes nearby recorded by HM Land Registry, ${idx}.`, { size: 9.5 });
+       }
+@@ -384,7 +384,7 @@ export async function reportPdf(r, links, when = new Date()) {
+     if (r.comps_count) {
+       const where = r.level === "building" ? `in your building, ${r.area_label}` : r.level === "street" ? `on ${r.area_label}` : r.level === "wider" ? `in ${r.area_label} and nearby` : `in ${r.area_label}`;
+       h2("The evidence behind your estimate");
+-      text(`We found ${r.comps_count} recent ${r.comps_count === 1 ? "sale" : "sales"} of similar homes ${where}. Your estimate is based on ${r.comps_count === 1 ? "this sale" : "these sales"} since January 2024${r.same_era ? `, in ${r.same_era} buildings` : ""}${r.size_range ? `, of ${r.size_range[0].toLocaleString("en-GB")} to ${r.size_range[1].toLocaleString("en-GB")} sq ft` : ""}, with floor areas from energy certificates.`, { size: 9.5 });
++      text(`We found ${r.comps_count} recent ${r.comps_count === 1 ? "sale" : "sales"} of similar homes ${where}. Your estimate is based on ${r.comps_count === 1 ? "this sale" : "these sales"} since January 2024${r.same_era ? `, in ${r.same_era} buildings` : ""}${r.size_range ? `, of ${r.size_range[0].toLocaleString("en-GB")} to ${r.size_range[1].toLocaleString("en-GB")} sq ft` : ""}, with recorded floor areas.`, { size: 9.5 });
+       text("Your Property Value Evidence Pack lists each sale, with its price, size, April 2026 value and how it compares with your home.", { size: 9.5 });
+     }
+   }
+@@ -393,7 +393,7 @@ export async function reportPdf(r, links, when = new Date()) {
+   h2("What the Valuation Office's computer model might miss");
+   text("The Valuation Office will value most homes with an automated model built on sales records and property data, checked by valuers rather than visits. It is most likely to go wrong where your home differs from the data:", { size: 9.5 });
+   bullets([
+-    ["Floor area.", "Energy certificates are often wrong by 10% or more, or count space that isn't habitable. Measure your home and compare."],
++    ["Floor area.", "Recorded floor areas are often wrong by 10% or more, or count space that isn't habitable. Measure your home and compare."],
+     ["Condition.", "The model assumes average condition. Damp, dated kitchens and bathrooms, or structural problems in April 2026 all lower the value."],
+     ["Position and outlook.", "A busy road, railway, lack of light, overlooking, or no outside space rarely show up in the data."],
+     ["Flats.", "A short lease, a lower-ground or basement floor, no lift, or high service charges reduce value. Lease length is especially important under 80 years."],
+@@ -404,7 +404,7 @@ export async function reportPdf(r, links, when = new Date()) {
+   bullets([
+     ["", "Write down what your home would have sold for in April 2026, and why."],
+     ["", "Save the sales in this report, and look for others on your street or in your building from late 2025 to mid 2026."],
+-    ["", "Measure the floor area, or get a measured floor plan, and keep your energy certificate."],
++    ["", "Measure the floor area, or get a measured floor plan, and keep any documents that record it."],
+     ["", "Take dated photos of anything that holds the value down: condition, damp, outlook, noise."],
+     ["", "Note anything unusual: lease length, floor level, access, rights of way, planning restrictions, flood risk."],
+     ["", "Keep receipts and dates for any building work, so you can show what the home was like in 2026."],
+@@ -442,7 +442,7 @@ export async function reportPdf(r, links, when = new Date()) {
+   if (i.type === "F") text("Lease length. For flats, this estimate assumes a long lease (roughly 90 years or more), as most nearby sales are. With a shorter lease, especially under 80 years, the value is usually lower.", { size: 7, color: C.muted, after: 2 });
+   text("About these figures. This estimate is based on the typical price per sq ft of similar homes sold nearby. If your home is in a particularly sought-after street or position, or has features buyers pay more for, its value may be higher; if it needs work or has drawbacks, lower.", { size: 7, color: C.muted, after: 2 });
+   text("This report is an estimate from public sales data, made without viewing your home, so its actual market value may vary significantly. It is not a valuation. Formal valuations come from a RICS-registered valuer. Only the Valuation Office decides your official value. All rates and rules are proposals and may change.", { size: 7, color: C.muted, after: 2 });
+-  text("Source: HM Land Registry Price Paid Data with floor areas from energy performance certificates. Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0.", { size: 7, color: C.muted, after: 2 });
++  text("Source: HM Land Registry Price Paid Data, with floor areas derived from available property records. Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0. Contains public sector information licensed under the Open Government Licence v3.0.", { size: 7, color: C.muted, after: 2 });
+ 
+   doc.setTitle("Your Mansion Tax Report");
+   doc.setAuthor("Challenge Mansion Tax");
+diff --git a/netlify/lib/sample-pack.mjs b/netlify/lib/sample-pack.mjs
+index 107d43b..af773f5 100644
+--- a/netlify/lib/sample-pack.mjs
++++ b/netlify/lib/sample-pack.mjs
+@@ -355,7 +355,7 @@ export async function samplePackPdf(d, when = new Date()) {
+   h3("Details we need to confirm");
+   rows([
+     ["Which home", unitKnown ? home : `${home}: which flat or maisonette is yours?`, !unitKnown],
+-    ["Floor area", d.area ? `${d.area.toLocaleString("en-GB")} sq ft, from your details` : `${tbc}: ideally measured, or from your energy certificate`, !d.area],
++    ["Floor area", d.area ? `${d.area.toLocaleString("en-GB")} sq ft, from your details` : `${tbc}: ideally measured, or from a floor plan`, !d.area],
+     ...(d.isFlat ? [["Floor, lift and lease", [d.floor, d.lease ? `${d.lease} years left` : ""].filter(Boolean).join(", ") || tbc, !(d.floor || d.lease)]] : [["Tenure", tbc, true]]),
+     ["Condition and features", d.condition ? `${d.condition} condition, from your details; outside space and outlook ${tbc.toLowerCase()}` : `${tbc}: condition, outside space and outlook at April 2026`, !d.condition]
+   ], { keyW: 128, size: 8.4 });
+@@ -391,7 +391,7 @@ export async function samplePackPdf(d, when = new Date()) {
+   button(M + bw + 10, "Book a free consultation", "https://challengemansiontax.co.uk/consultation", false);
+   y -= 36;
+   text("Limitations. An indicative value for surcharge banding, based on a desktop review of comparable sales, using the comparison method RICS valuers use, at the working valuation date of April 2026. It relies on public records and the property details you supply, without an inspection, so your home's actual market value may differ. It is not an RICS Red Book valuation and must not be relied on for any other purpose. The Valuation Office determines the official band; the rates and rules are proposals and may change.", { size: 7.2, color: C.muted, after: 3 });
+-  text(`Page 4 sources: HM Land Registry Price Paid Data, retrieved ${d.built ? longDate(d.built) : "this month"}, completions to ${monthYear(d.data_to)}, © Crown copyright ${when.getFullYear()}, Open Government Licence v3.0; energy performance certificates. Pages 1 and 2 are fictional and illustrative.`, { size: 7.2, color: C.muted, after: 0 });
++  text(`Page 4 sources: HM Land Registry Price Paid Data, retrieved ${d.built ? longDate(d.built) : "this month"}, completions to ${monthYear(d.data_to)}, © Crown copyright ${when.getFullYear()}; contains public sector information licensed under the Open Government Licence v3.0. Pages 1 and 2 are fictional and illustrative.`, { size: 7.2, color: C.muted, after: 0 });
+ 
+   doc.setTitle("Property Value Evidence Pack: personalised preview, Challenge Mansion Tax");
+   doc.setAuthor("Challenge Mansion Tax");
+diff --git a/scripts/build-pcl-trend.mjs b/scripts/build-pcl-trend.mjs
+index f1d55d5..02d4fbf 100644
+--- a/scripts/build-pcl-trend.mjs
++++ b/scripts/build-pcl-trend.mjs
+@@ -53,7 +53,7 @@ const quarters = [...allQuarters].sort().slice(0, -1);
+ const index = JSON.parse(fs.readFileSync(path.join(DATA, "index.json"), "utf8"));
+ const result = {
+   built: index.built, sales_to: index.sales_to, quarters,
+-  note: "Median price per sq ft of homes sold, as sold (not adjusted), HM Land Registry Price Paid Data with EPC floor areas.",
++  note: "Median price per sq ft of homes sold, as sold (not adjusted), HM Land Registry Price Paid Data with recorded floor areas.",
+   areas: out.map(a => ({
+     name: a.name, districts: a.districts,
+     points: quarters.map(q => {
+diff --git a/site/assets/adjustments.js b/site/assets/adjustments.js
+index fd7c7ce..399d8d6 100644
+--- a/site/assets/adjustments.js
++++ b/site/assets/adjustments.js
+@@ -96,7 +96,7 @@
+   }
+ 
+   // Size (quantum): how £ per sq ft changes with floor area, measured from our own sales data (HM
+-  // Land Registry prices with energy certificate floor areas, January 2024 to September 2026), comparing
++  // Land Registry prices with recorded floor areas, January 2024 to September 2026), comparing
+   // homes of the same type within the same postcode sector; sales of £1m or more where there are
+   // enough. £ per sq ft scales with (floor area)^b. In core prime London larger homes sell for MORE per
+   // sq ft (lateral, better specified, better positioned); elsewhere for less. See docs/adjustment-matrix.md.
+diff --git a/site/assets/checker.js b/site/assets/checker.js
+index 3d8df76..6f7fc84 100644
+--- a/site/assets/checker.js
++++ b/site/assets/checker.js
+@@ -64,7 +64,7 @@
+ 
+   // ---------- Tab 1: postcode and addresses ----------
+   const pcInput = $("e-postcode"), pcMsg = $("e-pc-msg"), addrField = $("e-addr-field"), addrSel = $("e-address");
+-  let lookedUp = "", addresses = [], epcArea = 0; // epcArea: m² pre-filled from the chosen address's EPC
++  let lookedUp = "", addresses = [], epcArea = 0; // epcArea: m² pre-filled from the chosen address's record
+ 
+   async function lookup() {
+     const pc = pcInput.value.trim();
+@@ -116,7 +116,7 @@
+       epcArea = a.area;
+     }
+     if (/\b(flat|apartment|maisonette)\b/i.test(a.a) || a.floor) setType("F");
+-    // Floor level from the energy certificate, where it was recorded.
++    // Floor level from the address's record, where it was recorded.
+     const floorSel = { B: "lower-ground", G: "ground" }[a.floor] || (Number(a.floor) >= 1 && Number(a.floor) <= 3 ? "1-3" : Number(a.floor) >= 4 ? "4+" : "");
+     if (floorSel) { $("e-floor").value = floorSel; document.querySelector("details.more").open = true; syncFloor(); }
+   });
+@@ -207,13 +207,13 @@
+   }
+ 
+   // The floor area the estimate used, in both units, and where it came from, so a wrong figure
+-  // (energy certificates are often out) is easy to spot and change.
++  // (recorded areas are often out) is easy to spot and change.
+   function areaStat(body) {
+     if (!body.area) return `<div class="stat"><b>Not given</b><span>floor area · <a href="#e-area" class="fix-area">add it</a> for a closer estimate</span></div>`;
+     const sqm = body.unit === "sqm" ? body.area : body.area / SQFT;
+     const sqft = body.unit === "sqm" ? body.area * SQFT : body.area;
+     const fromEpc = epcArea && Math.abs(sqm - epcArea) < 1.5;
+-    return `<div class="stat"><b>${Math.round(sqft).toLocaleString("en-GB")} sq ft</b><span>${Math.round(sqm)} m² floor area, ${fromEpc ? "from the energy certificate" : "as you entered it"} · <a href="#e-area" class="fix-area">wrong? change it</a></span></div>`;
++    return `<div class="stat"><b>${Math.round(sqft).toLocaleString("en-GB")} sq ft</b><span>${Math.round(sqm)} m² floor area, ${fromEpc ? "from available property records" : "as you entered it"} · <a href="#e-area" class="fix-area">wrong? change it</a></span></div>`;
+   }
+   document.addEventListener("click", e => {
+     if (!e.target.closest(".fix-area")) return;
+diff --git a/site/assets/pack.js b/site/assets/pack.js
+index bf3f4c1..8c3de94 100644
+--- a/site/assets/pack.js
++++ b/site/assets/pack.js
+@@ -485,7 +485,7 @@
+       </table></div>
+       ${S.weight_note ? `<p><b>Weighting.</b> ${esc(S.weight_note)}</p>` : ""}
+       ${S.own_sale ? `<div class="note"><b>The home itself sold in ${monthYear(S.own_sale.date)} for ${gbp(S.own_sale.price)}</b>, about ${gbp(S.own_sale.price_2026)} at April 2026 prices. A recent arm's-length sale of the subject home is the strongest evidence of its value; explain any difference from the range below.</div>` : ""}
+-      <p class="small">Floor areas for comparables come from energy performance certificates matched by address. EPC floor areas are measured to the energy assessors' conventions, which usually give a slightly smaller figure than an estate agent's gross internal area, so the subject's area should be measured the same way. Time adj. is the change in the house price index between the month of each sale and April 2026, the valuation date proposed for the High Value Council Tax Surcharge. Property adj. allows for the differences between each sale and the subject home, explained in section 5. Indicative Value for your home = its floor area × each sale's adjusted £ per sq ft. Each sale's weight (High, Medium or Low) shows how much it counts towards the central figure, as explained in section 6.</p>
++      <p class="small">Floor areas for comparables are derived from available property records and have not been independently measured. Recorded floor areas can be slightly smaller than an estate agent's gross internal area, so the subject home's area should be measured on a consistent basis. Time adj. is the change in the house price index between the month of each sale and April 2026, the valuation date proposed for the High Value Council Tax Surcharge. Property adj. allows for the differences between each sale and the subject home, explained in section 5. Indicative Value for your home = its floor area × each sale's adjusted £ per sq ft. Each sale's weight (High, Medium or Low) shows how much it counts towards the central figure, as explained in section 6.</p>
+ 
+       <h2>4. Details of the comparable properties</h2>
+       <p>Each kept sale as its particulars showed it when it sold: a photograph, the floor plan, and what we noted. Sources are shown under each one.</p>
+@@ -509,7 +509,7 @@
+         ${mid != null ? `<tfoot><tr class="total"><td class="l" colspan="8"><b>Indicative Value for ${esc(sub.address.v || "your home")}</b>${k.areaBased ? `<br><span class="small">Weighted average of the adjusted £ per sq ft above, × ${k.area.toLocaleString("en-GB")} sq ft</span>` : ""}</td><td class="num"><b>${k.areaBased ? "£" + Math.round(mid / k.area).toLocaleString("en-GB") : ""}</b></td><td class="num"><b>${gbp(mid)}</b></td></tr></tfoot>` : ""}
+       </table></div>
+       ${k.used.length ? `<table><thead><tr><th class="l">Comparable</th><th class="l">How it differs</th><th>Property adj.</th><th class="l">Reason and evidence</th></tr></thead><tbody>${k.used.map(u => `<tr><td class="l">${esc(u.c.address)}</td><td class="l">${esc(u.c.diff) || gap("Not described")}</td><td class="num">${num(u.c.adj) ? (num(u.c.adj) > 0 ? "+" : "") + num(u.c.adj) + "%" : "None"}</td><td class="l">${num(u.c.adj) ? esc(u.c.why) || gap("Reason needed") : esc(u.c.why) || "–"}${u.c.source ? `<br><span class="small"><b>Source:</b> ${esc(u.c.source)}</span>` : num(u.c.adj) ? `<br>${gap("Source needed")}` : ""}</td></tr>`).join("")}</tbody></table>` : ""}
+-      <p class="small">Adjustments move each comparable towards the subject home. Sale prices, dates and tenure come from HM Land Registry, and floor areas and floor levels from energy performance certificates. Other details of each sale, such as condition, outside space, outlook, lift and porterage, come from the sources named against it, such as the sold listing, the selling agent or our own knowledge of the building. We do not use asking prices, estate agent estimates or website valuations, and every adjustment above is backed by a stated reason. Where an adjustment uses our standard adjustment table, the figures are starting points drawn from published research and tribunal practice (for example, about 2% a floor for floor level, and published lease relativity graphs for lease length), checked by the reviewer against local sales.</p>
++      <p class="small">Adjustments move each comparable towards the subject home. Sale prices, dates and tenure come from HM Land Registry, and floor areas and floor levels from available property records. Other details of each sale, such as condition, outside space, outlook, lift and porterage, come from the sources named against it, such as the sold listing, the selling agent or our own knowledge of the building. We do not use asking prices, estate agent estimates or website valuations, and every adjustment above is backed by a stated reason. Where an adjustment uses our standard adjustment table, the figures are starting points drawn from published research and tribunal practice (for example, about 2% a floor for floor level, and published lease relativity graphs for lease length), checked by the reviewer against local sales.</p>
+ 
+       <h2>6. Value conclusion</h2>
+       <p>Indicative Value at April 2026: <b>${mid != null ? gbp(mid) : "–"}</b>${k.areaBased && mid != null ? ` (£${Math.round(mid / k.area).toLocaleString("en-GB")} per sq ft × ${k.area.toLocaleString("en-GB")} sq ft)` : ""}. This single figure is our conclusion. The range of the adjusted evidence is <b>${lo != null ? gbp(lo) + " to " + gbp(hi) : "–"}</b>: it shows how far the comparable sales spread once adjusted, and how much the conclusion could reasonably move.
+@@ -535,7 +535,7 @@
+       <p class="small"><b>Basis of value.</b> The Indicative Value is our estimate of Market Value at the valuation date, as defined by RICS and the International Valuation Standards: the estimated amount for which the property should exchange on the valuation date between a willing buyer and a willing seller in an arm's length transaction, after proper marketing, where the parties had each acted knowledgeably, prudently and without compulsion. The valuation date is April 2026, the date proposed for the High Value Council Tax Surcharge, so this is a retrospective assessment; sales after that date are used only as supporting evidence and are marked in section 3.</p>
+       <p class="small"><b>Method.</b> The comparison method: completed sales of similar homes, the best evidence of value, adjusted to the valuation date with a price index and then for each difference from the subject home, weighted by how closely each matches, and checked against the evidence as a whole. Price indices and general market data are used only for market movement, not as direct evidence of value. Asking prices, estate agents' estimates and website valuations are not used.</p>
+       <p class="small"><b>Scope and assumptions.</b> A desktop assessment: the home has not been inspected or measured by us, and we rely on the information and floor area provided by the owner and on public records, marked as such in section 2. Unless stated otherwise we assume: vacant possession; good and marketable title, with no unusual restrictions, rights of way or charges; for a flat, the lease and service charge as described, with no major works due; no contamination, structural defect, cladding or similar issue beyond what is recorded; and the home as it was at April 2026. If any assumption is wrong, the figure may change.</p>
+-      <p class="small">Sold prices: HM Land Registry Price Paid Data. Contains HM Land Registry data © Crown copyright and database right ${new Date().getFullYear()}, licensed under the Open Government Licence v3.0. Price index: in London, our own proprietary house price index; elsewhere, the UK House Price Index (HM Land Registry and ONS). Floor areas: energy performance certificate data (Ministry of Housing, Communities and Local Government). Postcodes: OS Code-Point Open © Crown copyright and database right. Sales data to ${monthYear(S.data_to) || "the latest month available"}.</p>
++      <p class="small">Sold prices: HM Land Registry Price Paid Data. Contains HM Land Registry data © Crown copyright and database right ${new Date().getFullYear()}, licensed under the Open Government Licence v3.0. Price index: in London, our own proprietary house price index; elsewhere, the UK House Price Index (HM Land Registry and ONS). Floor areas: available property records. Contains public sector information licensed under the Open Government Licence v3.0. Postcodes: OS Code-Point Open © Crown copyright and database right. Sales data to ${monthYear(S.data_to) || "the latest month available"}.</p>
+       <p class="small">This is an independent evidence review prepared to support a challenge. It is not a RICS Red Book valuation, legal or tax advice, or an official Valuation Office Agency assessment, and it does not guarantee that a challenge will succeed. It relies on public records and on information from the owner, marked as such above. The High Value Council Tax Surcharge rules, valuation date and challenge process are proposals (consultation response, 28 October 2026) and may change.</p>
+ 
+       <p class="small"><b>Purpose and reliance.</b> This Property Value Evidence Pack, including its Indicative Value, is prepared solely to help you consider the owner's liability for the High Value Council Tax Surcharge. It must not be relied on for any other purpose, including as a valuation, for selling, buying or letting a property, for mortgages, borrowing or lending, for insurance, or for any other tax. No responsibility can be accepted for the accuracy of the Indicative Value, or for any use of the pack other than considering the owner's High Value Council Tax Surcharge liability. For any other purpose, instruct a RICS-registered valuer. Indicative Values are reached without any inspection or viewing of the property, so its actual market value may vary significantly.</p>
+diff --git a/site/assets/report.js b/site/assets/report.js
+index 703716e..d5f788b 100644
+--- a/site/assets/report.js
++++ b/site/assets/report.js
+@@ -70,7 +70,7 @@
+       $("r-comps-panel").hidden = false;
+       const where = r.level === "building" ? `in your building, ${r.area_label}` : r.level === "street" ? `on ${r.area_label}` : r.level === "wider" ? `in ${r.area_label} and nearby` : `in ${r.area_label}`;
+       $("r-comps-title").textContent = `We found ${r.comps_count} recent ${r.comps_count === 1 ? "sale" : "sales"} of similar homes ${where}`;
+-      $("r-comps-intro").textContent = `Your estimate is based on ${r.comps_count === 1 ? "this sale" : "these sales"} since January 2024${r.same_era ? `, in ${r.same_era} buildings` : ""}${r.size_range ? `, of ${r.size_range[0].toLocaleString("en-GB")} to ${r.size_range[1].toLocaleString("en-GB")} sq ft` : ""}, with floor areas from energy certificates.`;
++      $("r-comps-intro").textContent = `Your estimate is based on ${r.comps_count === 1 ? "this sale" : "these sales"} since January 2024${r.same_era ? `, in ${r.same_era} buildings` : ""}${r.size_range ? `, of ${r.size_range[0].toLocaleString("en-GB")} to ${r.size_range[1].toLocaleString("en-GB")} sq ft` : ""}, with recorded floor areas.`;
+     }
+   }).catch(() => fail("Sorry, the report isn't available right now. Please try again later."));
+ })();
+diff --git a/site/data/pcl-trend.json b/site/data/pcl-trend.json
+index 4971ea2..aa3fcc6 100644
+--- a/site/data/pcl-trend.json
++++ b/site/data/pcl-trend.json
+@@ -1 +1 @@
+-{"built":"2026-11-04","sales_to":"2026-09","quarters":["2024 Q1","2024 Q2","2024 Q3","2024 Q4","2025 Q1","2025 Q2","2025 Q3","2025 Q4","2026 Q1","2026 Q2"],"note":"Median price per sq ft of homes sold, as sold (not adjusted), HM Land Registry Price Paid Data with EPC floor areas.","areas":[{"name":"Mayfair & St James's","districts":["W1J","W1K","W1S","SW1Y"],"points":[{"q":"2024 Q1","ppsf":null,"n":9},{"q":"2024 Q2","ppsf":2149,"n":18},{"q":"2024 Q3","ppsf":2080,"n":17},{"q":"2024 Q4","ppsf":2357,"n":23},{"q":"2025 Q1","ppsf":2037,"n":18},{"q":"2025 Q2","ppsf":null,"n":11},{"q":"2025 Q3","ppsf":null,"n":10},{"q":"2025 Q4","ppsf":2103,"n":20},{"q":"2026 Q1","ppsf":null,"n":4},{"q":"2026 Q2","ppsf":null,"n":9}]},{"name":"Knightsbridge & Belgravia","districts":["SW1X","SW1W"],"points":[{"q":"2024 Q1","ppsf":1979,"n":38},{"q":"2024 Q2","ppsf":1706,"n":41},{"q":"2024 Q3","ppsf":1819,"n":49},{"q":"2024 Q4","ppsf":1787,"n":50},{"q":"2025 Q1","ppsf":1759,"n":45},{"q":"2025 Q2","ppsf":1806,"n":39},{"q":"2025 Q3","ppsf":1548,"n":37},{"q":"2025 Q4","ppsf":1371,"n":43},{"q":"2026 Q1","ppsf":1683,"n":23},{"q":"2026 Q2","ppsf":1652,"n":17}]},{"name":"Chelsea","districts":["SW3","SW10"],"points":[{"q":"2024 Q1","ppsf":1421,"n":110},{"q":"2024 Q2","ppsf":1482,"n":141},{"q":"2024 Q3","ppsf":1424,"n":128},{"q":"2024 Q4","ppsf":1378,"n":122},{"q":"2025 Q1","ppsf":1443,"n":120},{"q":"2025 Q2","ppsf":1567,"n":98},{"q":"2025 Q3","ppsf":1452,"n":125},{"q":"2025 Q4","ppsf":1372,"n":105},{"q":"2026 Q1","ppsf":1399,"n":91},{"q":"2026 Q2","ppsf":1347,"n":74}]},{"name":"Kensington","districts":["W8","SW7","SW5"],"points":[{"q":"2024 Q1","ppsf":1366,"n":122},{"q":"2024 Q2","ppsf":1466,"n":150},{"q":"2024 Q3","ppsf":1395,"n":154},{"q":"2024 Q4","ppsf":1380,"n":157},{"q":"2025 Q1","ppsf":1333,"n":175},{"q":"2025 Q2","ppsf":1379,"n":111},{"q":"2025 Q3","ppsf":1389,"n":151},{"q":"2025 Q4","ppsf":1292,"n":132},{"q":"2026 Q1","ppsf":1204,"n":89},{"q":"2026 Q2","ppsf":1265,"n":91}]},{"name":"Notting Hill & Holland Park","districts":["W11"],"points":[{"q":"2024 Q1","ppsf":1345,"n":43},{"q":"2024 Q2","ppsf":1511,"n":42},{"q":"2024 Q3","ppsf":1394,"n":47},{"q":"2024 Q4","ppsf":1610,"n":50},{"q":"2025 Q1","ppsf":1388,"n":82},{"q":"2025 Q2","ppsf":1422,"n":49},{"q":"2025 Q3","ppsf":1455,"n":61},{"q":"2025 Q4","ppsf":1434,"n":59},{"q":"2026 Q1","ppsf":1267,"n":35},{"q":"2026 Q2","ppsf":1337,"n":29}]},{"name":"Marylebone & Fitzrovia","districts":["W1G","W1U","W1H","W1W","W1T"],"points":[{"q":"2024 Q1","ppsf":1626,"n":45},{"q":"2024 Q2","ppsf":1404,"n":53},{"q":"2024 Q3","ppsf":1470,"n":75},{"q":"2024 Q4","ppsf":1681,"n":56},{"q":"2025 Q1","ppsf":1413,"n":71},{"q":"2025 Q2","ppsf":1427,"n":43},{"q":"2025 Q3","ppsf":1298,"n":57},{"q":"2025 Q4","ppsf":1489,"n":44},{"q":"2026 Q1","ppsf":1231,"n":44},{"q":"2026 Q2","ppsf":1232,"n":34}]},{"name":"Westminster & Pimlico","districts":["SW1P","SW1V","SW1E","SW1H","SW1A"],"points":[{"q":"2024 Q1","ppsf":1148,"n":72},{"q":"2024 Q2","ppsf":1176,"n":68},{"q":"2024 Q3","ppsf":1126,"n":86},{"q":"2024 Q4","ppsf":1068,"n":108},{"q":"2025 Q1","ppsf":1014,"n":115},{"q":"2025 Q2","ppsf":1098,"n":65},{"q":"2025 Q3","ppsf":993,"n":73},{"q":"2025 Q4","ppsf":977,"n":88},{"q":"2026 Q1","ppsf":1013,"n":54},{"q":"2026 Q2","ppsf":982,"n":60}]},{"name":"Hampstead & St John's Wood","districts":["NW3","NW8"],"points":[{"q":"2024 Q1","ppsf":1051,"n":149},{"q":"2024 Q2","ppsf":1102,"n":194},{"q":"2024 Q3","ppsf":1063,"n":241},{"q":"2024 Q4","ppsf":1123,"n":245},{"q":"2025 Q1","ppsf":1085,"n":239},{"q":"2025 Q2","ppsf":1152,"n":149},{"q":"2025 Q3","ppsf":1147,"n":184},{"q":"2025 Q4","ppsf":1093,"n":173},{"q":"2026 Q1","ppsf":1010,"n":132},{"q":"2026 Q2","ppsf":1051,"n":117}]}]}
+\ No newline at end of file
++{"built":"2026-11-04","sales_to":"2026-09","quarters":["2024 Q1","2024 Q2","2024 Q3","2024 Q4","2025 Q1","2025 Q2","2025 Q3","2025 Q4","2026 Q1","2026 Q2"],"note":"Median price per sq ft of homes sold, as sold (not adjusted), HM Land Registry Price Paid Data with recorded floor areas.","areas":[{"name":"Mayfair & St James's","districts":["W1J","W1K","W1S","SW1Y"],"points":[{"q":"2024 Q1","ppsf":null,"n":9},{"q":"2024 Q2","ppsf":2149,"n":18},{"q":"2024 Q3","ppsf":2080,"n":17},{"q":"2024 Q4","ppsf":2357,"n":23},{"q":"2025 Q1","ppsf":2037,"n":18},{"q":"2025 Q2","ppsf":null,"n":11},{"q":"2025 Q3","ppsf":null,"n":10},{"q":"2025 Q4","ppsf":2103,"n":20},{"q":"2026 Q1","ppsf":null,"n":4},{"q":"2026 Q2","ppsf":null,"n":9}]},{"name":"Knightsbridge & Belgravia","districts":["SW1X","SW1W"],"points":[{"q":"2024 Q1","ppsf":1979,"n":38},{"q":"2024 Q2","ppsf":1706,"n":41},{"q":"2024 Q3","ppsf":1819,"n":49},{"q":"2024 Q4","ppsf":1787,"n":50},{"q":"2025 Q1","ppsf":1759,"n":45},{"q":"2025 Q2","ppsf":1806,"n":39},{"q":"2025 Q3","ppsf":1548,"n":37},{"q":"2025 Q4","ppsf":1371,"n":43},{"q":"2026 Q1","ppsf":1683,"n":23},{"q":"2026 Q2","ppsf":1652,"n":17}]},{"name":"Chelsea","districts":["SW3","SW10"],"points":[{"q":"2024 Q1","ppsf":1421,"n":110},{"q":"2024 Q2","ppsf":1482,"n":141},{"q":"2024 Q3","ppsf":1424,"n":128},{"q":"2024 Q4","ppsf":1378,"n":122},{"q":"2025 Q1","ppsf":1443,"n":120},{"q":"2025 Q2","ppsf":1567,"n":98},{"q":"2025 Q3","ppsf":1452,"n":125},{"q":"2025 Q4","ppsf":1372,"n":105},{"q":"2026 Q1","ppsf":1399,"n":91},{"q":"2026 Q2","ppsf":1347,"n":74}]},{"name":"Kensington","districts":["W8","SW7","SW5"],"points":[{"q":"2024 Q1","ppsf":1366,"n":122},{"q":"2024 Q2","ppsf":1466,"n":150},{"q":"2024 Q3","ppsf":1395,"n":154},{"q":"2024 Q4","ppsf":1380,"n":157},{"q":"2025 Q1","ppsf":1333,"n":175},{"q":"2025 Q2","ppsf":1379,"n":111},{"q":"2025 Q3","ppsf":1389,"n":151},{"q":"2025 Q4","ppsf":1292,"n":132},{"q":"2026 Q1","ppsf":1204,"n":89},{"q":"2026 Q2","ppsf":1265,"n":91}]},{"name":"Notting Hill & Holland Park","districts":["W11"],"points":[{"q":"2024 Q1","ppsf":1345,"n":43},{"q":"2024 Q2","ppsf":1511,"n":42},{"q":"2024 Q3","ppsf":1394,"n":47},{"q":"2024 Q4","ppsf":1610,"n":50},{"q":"2025 Q1","ppsf":1388,"n":82},{"q":"2025 Q2","ppsf":1422,"n":49},{"q":"2025 Q3","ppsf":1455,"n":61},{"q":"2025 Q4","ppsf":1434,"n":59},{"q":"2026 Q1","ppsf":1267,"n":35},{"q":"2026 Q2","ppsf":1337,"n":29}]},{"name":"Marylebone & Fitzrovia","districts":["W1G","W1U","W1H","W1W","W1T"],"points":[{"q":"2024 Q1","ppsf":1626,"n":45},{"q":"2024 Q2","ppsf":1404,"n":53},{"q":"2024 Q3","ppsf":1470,"n":75},{"q":"2024 Q4","ppsf":1681,"n":56},{"q":"2025 Q1","ppsf":1413,"n":71},{"q":"2025 Q2","ppsf":1427,"n":43},{"q":"2025 Q3","ppsf":1298,"n":57},{"q":"2025 Q4","ppsf":1489,"n":44},{"q":"2026 Q1","ppsf":1231,"n":44},{"q":"2026 Q2","ppsf":1232,"n":34}]},{"name":"Westminster & Pimlico","districts":["SW1P","SW1V","SW1E","SW1H","SW1A"],"points":[{"q":"2024 Q1","ppsf":1148,"n":72},{"q":"2024 Q2","ppsf":1176,"n":68},{"q":"2024 Q3","ppsf":1126,"n":86},{"q":"2024 Q4","ppsf":1068,"n":108},{"q":"2025 Q1","ppsf":1014,"n":115},{"q":"2025 Q2","ppsf":1098,"n":65},{"q":"2025 Q3","ppsf":993,"n":73},{"q":"2025 Q4","ppsf":977,"n":88},{"q":"2026 Q1","ppsf":1013,"n":54},{"q":"2026 Q2","ppsf":982,"n":60}]},{"name":"Hampstead & St John's Wood","districts":["NW3","NW8"],"points":[{"q":"2024 Q1","ppsf":1051,"n":149},{"q":"2024 Q2","ppsf":1102,"n":194},{"q":"2024 Q3","ppsf":1063,"n":241},{"q":"2024 Q4","ppsf":1123,"n":245},{"q":"2025 Q1","ppsf":1085,"n":239},{"q":"2025 Q2","ppsf":1152,"n":149},{"q":"2025 Q3","ppsf":1147,"n":184},{"q":"2025 Q4","ppsf":1093,"n":173},{"q":"2026 Q1","ppsf":1010,"n":132},{"q":"2026 Q2","ppsf":1051,"n":117}]}]}
+\ No newline at end of file
+diff --git a/site/index.html b/site/index.html
+index 7d53f33..02db927 100644
+--- a/site/index.html
++++ b/site/index.html
+@@ -102,10 +102,10 @@
+             <div class="field" id="e-addr-field" hidden>
+               <label for="e-address">Your address (optional)</label>
+               <select class="input" id="e-address"></select>
+-              <span class="hint">Picking your address fills in the floor area from its energy certificate, if we have it.</span>
++              <span class="hint">Picking your address fills in an estimated floor area from available property records, where we hold one. Please check it.</span>
+               <details class="why">
+                 <summary>Why isn't my address listed?</summary>
+-                <p>We list homes in this postcode that have an energy certificate (EPC) on the government register and are likely to be worth £1.2m or more, plus homes sold since January 2024. Yours may be missing if it has no certificate (many homes not sold or let since 2008 don't), if its certificate gives the address differently (for example "Garden Flat" instead of "Flat A"), or if its recorded size suggests a lower value. You can still get an estimate: choose "My address isn't listed" and enter your floor area.</p>
++                <p>We list homes in this postcode that appear in the property records we use and are likely to be worth £1.2m or more, plus homes sold since January 2024. Yours may be missing if we hold no record for it, if its record gives the address differently (for example "Garden Flat" instead of "Flat A"), or if its recorded size suggests a lower value. You can still get an estimate: choose "My address isn't listed" and enter your floor area.</p>
+               </details>
+             </div>
+             <div class="field" id="e-street-field" hidden>
+diff --git a/site/london-price-index.html b/site/london-price-index.html
+index 58d2439..d2b8c1e 100644
+--- a/site/london-price-index.html
++++ b/site/london-price-index.html
+@@ -77,7 +77,7 @@
+ 
+   <section>
+     <div class="wrap narrow stack">
+-      <p class="hint">Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0. Floor areas from energy performance certificate data (Ministry of Housing, Communities and Local Government). This index is our own proprietary analysis, not an official statistic.</p>
++      <p class="hint">Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0. Floor areas from available property records. Contains public sector information licensed under the Open Government Licence v3.0. This index is our own proprietary analysis, not an official statistic.</p>
+       <div class="cta-row"><a class="btn" href="/#checker">Estimate your home's 2026 value</a><a class="btn ghost" href="/prime-london-prices">Prime London prices per sq ft</a></div>
+     </div>
+   </section>
+diff --git a/site/mansion-tax-appeal-specialists.html b/site/mansion-tax-appeal-specialists.html
+index 4bc195b..ed6cf98 100644
+--- a/site/mansion-tax-appeal-specialists.html
++++ b/site/mansion-tax-appeal-specialists.html
+@@ -80,7 +80,7 @@
+         <li><b>Condition and defects</b>: dated photographs of dated kitchens and bathrooms, damp, subsidence, roof or structural problems, and repair quotes.</li>
+         <li><b>Lease length</b>: for flats, the years left on the lease, especially below about 80 years, and onerous ground rent or service charges.</li>
+         <li><b>Floor level and lifts</b>: a third-floor flat with no lift, or a lower-ground flat with little light, will usually sell for less than a similar flat elsewhere in the building.</li>
+-        <li><b>Size, layout and outlook</b>: floor area (often on the EPC), awkward layouts, a busy road or a poor view.</li>
++        <li><b>Size, layout and outlook</b>: floor area (check it against a measured floor plan), awkward layouts, a busy road or a poor view.</li>
+       </ul>
+       <p>See <a href="/record-your-home-2026-condition">how to record your home's 2026 condition</a> for a checklist.</p>
+ 
+diff --git a/site/mansion-tax-chelsea.html b/site/mansion-tax-chelsea.html
+index ce87813..ad6d323 100644
+--- a/site/mansion-tax-chelsea.html
++++ b/site/mansion-tax-chelsea.html
+@@ -96,7 +96,7 @@
+         <li><b>Which sales:</b> standard-price sales of houses and flats (Land Registry category A). Other property types and additional-price entries, such as repossessions and some company and buy-to-let purchases, are excluded. This is a sample of recorded sales, not every home in Chelsea.</li>
+         <li><b>April 2026 prices:</b> each sale is brought to April 2026, the valuation date, using our own London price index, built from these sales by postcode district.</li>
+         <li><b>"Within 10% above a threshold":</b> worth at least the threshold but less than 10% above it at April 2026 prices: £2m to £2.2m, £2.5m to £2.75m, £3.5m to £3.85m, or £5m to £5.5m.</li>
+-        <li><b>Price per sq ft:</b> from floor areas on energy certificates, for the £2m+ sales where one was found.</li>
++        <li><b>Price per sq ft:</b> using recorded floor areas, for the £2m+ sales where one was available.</li>
+       </ul>
+       <p class="hint">See how prices have moved in Chelsea on our <a href="/prime-london-prices">prime London prices</a> page. Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0. You're welcome to quote these figures with a link to this page.</p>
+       <div data-news-signup="mansion-tax-chelsea"></div>
+diff --git a/site/mansion-tax-flats-floor-level-lift.html b/site/mansion-tax-flats-floor-level-lift.html
+index 176067a..b3a39bf 100644
+--- a/site/mansion-tax-flats-floor-level-lift.html
++++ b/site/mansion-tax-flats-floor-level-lift.html
+@@ -55,7 +55,7 @@
+       <p class="lede">Two flats of the same size in the same building can sell for very different prices. Floor level, light, and whether there is a lift all matter to buyers. The mansion tax band depends on what your flat was worth in <b>April 2026</b>, so these differences can matter near a threshold.</p>
+ 
+       <h2>What the sales show</h2>
+-      <p>We looked at HM Land Registry sales of flats in period (pre-1919) buildings in Chelsea, Kensington, Knightsbridge, South Kensington, Belgravia, Earl's Court and Notting Hill (SW3, SW10, SW7, SW5, SW1X, SW1W, W8 and W11) from January 2024 to September 2026, brought to April 2026 prices, with floor levels and floor areas from Energy Performance Certificates.</p>
++      <p>We looked at HM Land Registry sales of flats in period (pre-1919) buildings in Chelsea, Kensington, Knightsbridge, South Kensington, Belgravia, Earl's Court and Notting Hill (SW3, SW10, SW7, SW5, SW1X, SW1W, W8 and W11) from January 2024 to September 2026, brought to April 2026 prices, with floor levels and floor areas from available property records.</p>
+       <div class="tablewrap"><table class="fees">
+         <thead><tr><th>Floor</th><th>Sales</th><th>Median price per sq ft (April 2026 prices)</th></tr></thead>
+         <tbody>
+@@ -104,7 +104,7 @@
+         <li><a href="/mansion-tax-chelsea">Mansion tax in Chelsea</a></li>
+         <li><a href="/mansion-tax-kensington">Mansion tax in Kensington</a></li>
+       </ul>
+-      <p class="hint">Sources: HM Land Registry Price Paid Data (contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0); Energy Performance Certificate floor levels and floor areas; prices brought to April 2026 with our <a href="/london-price-index">London Price Index</a>. Medians of recorded sales; floor level was found for about three-quarters of flat sales. The challenge process is still a proposal and could change.</p>
++      <p class="hint">Sources: HM Land Registry Price Paid Data (contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0); floor levels and floor areas from available property records (contains public sector information licensed under the Open Government Licence v3.0); prices brought to April 2026 with our <a href="/london-price-index">London Price Index</a>. Medians of recorded sales; floor level was found for about three-quarters of flat sales. The challenge process is still a proposal and could change.</p>
+     </div>
+   </section>
+ </main>
+diff --git a/site/mansion-tax-kensington.html b/site/mansion-tax-kensington.html
+index f1ffd97..b619cc6 100644
+--- a/site/mansion-tax-kensington.html
++++ b/site/mansion-tax-kensington.html
+@@ -96,7 +96,7 @@
+         <li><b>Which sales:</b> standard-price sales of houses and flats (Land Registry category A). Other property types and additional-price entries, such as repossessions and some company and buy-to-let purchases, are excluded. This is a sample of recorded sales, not every home in Kensington.</li>
+         <li><b>April 2026 prices:</b> each sale is brought to April 2026, the valuation date, using our own London price index, built from these sales by postcode district.</li>
+         <li><b>"Within 10% above a threshold":</b> worth at least the threshold but less than 10% above it at April 2026 prices: £2m to £2.2m, £2.5m to £2.75m, £3.5m to £3.85m, or £5m to £5.5m.</li>
+-        <li><b>Price per sq ft:</b> from floor areas on energy certificates, for the £2m+ sales where one was found.</li>
++        <li><b>Price per sq ft:</b> using recorded floor areas, for the £2m+ sales where one was available.</li>
+       </ul>
+       <p class="hint">See how prices have moved in Kensington on our <a href="/prime-london-prices">prime London prices</a> page. Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0. You're welcome to quote these figures with a link to this page.</p>
+       <div data-news-signup="mansion-tax-kensington"></div>
+diff --git a/site/order-details.html b/site/order-details.html
+index d2bde44..f0337fc 100644
+--- a/site/order-details.html
++++ b/site/order-details.html
+@@ -70,7 +70,7 @@
+           </select></div>
+ 
+         <div class="panel" id="d-epc" hidden style="padding:12px 14px">
+-          <p style="margin:0"><b>Floor area from your energy certificate (EPC):</b> <span id="d-epc-text"></span></p>
++          <p style="margin:0"><b>Estimated floor area from available property records:</b> <span id="d-epc-text"></span></p>
+           <p style="margin:6px 0 0"><button class="btn ghost small" type="button" id="d-epc-change">Change it</button></p>
+         </div>
+         <div class="stack" id="d-area-fields">
+@@ -79,7 +79,7 @@
+             <div class="cta-row" style="margin:0;gap:8px;flex-wrap:nowrap"><input class="input" id="d-area" name="area" inputmode="decimal" maxlength="8" style="flex:1">
+             <select class="input" id="d-unit" name="area_unit" style="width:auto"><option>sq ft</option><option>sq m</option></select></div></div>
+           <div class="field"><label for="d-area-source">Where is the floor area from?</label>
+-            <select class="input" id="d-area-source" name="area_source"><option value="">Choose…</option><option>Energy certificate (EPC)</option><option>Floor plan</option><option>My estimate</option><option>Not sure</option></select></div>
++            <select class="input" id="d-area-source" name="area_source"><option value="">Choose…</option><option>Property records</option><option>Floor plan</option><option>My estimate</option><option>Not sure</option></select></div>
+         </div>
+ 
+         <fieldset class="field" id="d-tenure" style="border:0;padding:0;margin:0"><legend style="font-weight:600;padding:0">Do you own the freehold or a lease? <span class="req" aria-hidden="true">*</span></legend>
+@@ -249,14 +249,14 @@
+   });
+   const ticked = id => Array.from($(id).querySelectorAll("input:checked")).map(b => b.value).join(", ");
+ 
+-  // ---------- Postcode → address list → floor area from the energy certificate ----------
++  // ---------- Postcode → address list → floor area from the address's record ----------
+   let lookedUp = "", addresses = [];
+   const pcMsg = $("d-pc-msg"), pick = $("d-pick");
+   function showEpc(m2) {
+     f.epc_area_m2.value = m2 || "";
+     $("d-no-epc").hidden = !!m2 || pick.value === "" ;
+     if (!m2) { $("d-epc").hidden = true; $("d-area-fields").hidden = false; return; }
+-    f.area.value = Math.round(m2 * SQFT); f.area_unit.value = "sq ft"; f.area_source.value = "Energy certificate (EPC)";
++    f.area.value = Math.round(m2 * SQFT); f.area_unit.value = "sq ft"; f.area_source.value = "Property records";
+     $("d-epc-text").textContent = Math.round(m2 * SQFT).toLocaleString("en-GB") + " sq ft (" + m2 + " sq m)";
+     $("d-epc").hidden = false; $("d-area-fields").hidden = true;
+   }
+diff --git a/site/order.html b/site/order.html
+index 2c82ba9..c3b47eb 100644
+--- a/site/order.html
++++ b/site/order.html
+@@ -59,7 +59,7 @@
+           <div class="field"><label for="o-postcode">Postcode</label><input class="input" id="o-postcode" name="postcode" required autocomplete="postal-code" maxlength="10"></div>
+           <div class="field"><label for="o-type">Property type</label><select class="input" id="o-type" name="type" required><option value="">Choose…</option><option value="F">Flat or maisonette</option><option value="T">Terraced house</option><option value="S">Semi-detached house</option><option value="D">Detached house</option></select></div>
+         </div>
+-        <div class="field"><label for="o-area">Floor area in sq ft (optional)</label><input class="input" id="o-area" name="area" inputmode="numeric" maxlength="6" placeholder="From your energy certificate or floor plan"></div>
++        <div class="field"><label for="o-area">Floor area in sq ft (optional)</label><input class="input" id="o-area" name="area" inputmode="numeric" maxlength="6" placeholder="From a floor plan or sale particulars"></div>
+         <div class="field"><label for="o-notes">Anything we should know (optional)</label><textarea class="input" id="o-notes" name="notes" rows="3" maxlength="1500" placeholder="For example: basement flat, no lift, short lease, recent works, a garden or terrace, or anything that affects its value"></textarea></div>
+         <div class="panel" style="padding:12px 14px">
+           <label class="check" style="margin:0"><input type="checkbox" id="o-lease" name="lease_review" value="yes"> <span><b>Add a Lease Value Review (+£99)</b>, for leasehold and share of freehold homes. That's half the £199 it costs on its own later. We read your lease and pick out terms that could lower your home's value, such as a short lease, escalating ground rent or strict rules on alterations or subletting, and add them to your evidence. <a href="/services#lease-review" target="_blank">More about it</a></span></label>
+diff --git a/site/prime-london-prices.html b/site/prime-london-prices.html
+index ba2f2a7..ec148d1 100644
+--- a/site/prime-london-prices.html
++++ b/site/prime-london-prices.html
+@@ -53,7 +53,7 @@
+       <div class="cta-row"><a class="btn ghost small" href="#local">Local sale prices</a><a class="btn ghost small" href="#trends">London price trends</a></div>
+ 
+       <h2 id="local">Local sale prices</h2>
+-      <p>What homes actually sold for, per square foot, in each prime London area every quarter. The figures are sale prices with floor areas from energy certificates, as sold and not adjusted.</p>
++      <p>What homes actually sold for, per square foot, in each prime London area every quarter. The figures are sale prices with recorded floor areas, as sold and not adjusted.</p>
+       <div class="panel trend-root" id="trend" hidden>
+         <div class="trend-chips" role="group" aria-label="Areas shown (up to four)"></div>
+         <svg class="trend-chart" role="img" aria-label="Median price per sq ft by quarter for the selected prime London areas"></svg>
+diff --git a/site/report.html b/site/report.html
+index 8999882..380e539 100644
+--- a/site/report.html
++++ b/site/report.html
+@@ -38,14 +38,14 @@
+           <p id="r-comps-intro"></p>
+           <p>Your <b>Property Value Evidence Pack</b> lists each one: the address, date and sale price, the floor area, the price per sq ft, the value at April 2026, and how each compares with your home (size, floor, condition, lease). We check every sale, record your home's 2026 condition with dated evidence, and every pack is personally reviewed by our property expert before it reaches you.</p>
+           <div class="cta-row"><a class="btn" id="r-sample-cta" href="/sample-report">Get your free personalised preview</a><a class="btn ghost" id="r-consult-cta" href="/consultation">Book a free consultation</a><a class="btn ghost" id="r-review-cta" href="/services">Property Value Evidence Pack: £199 (first 10 orders)</a></div>
+-          <p class="hint">Source: HM Land Registry Price Paid Data with floor areas from energy performance certificates. Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0. See how prime London prices have moved since 2024: <a href="/prime-london-prices">Prime London prices per sq ft</a>.</p>
++          <p class="hint">Source: HM Land Registry Price Paid Data, with floor areas derived from available property records. Contains HM Land Registry data © Crown copyright and database right 2026, licensed under the Open Government Licence v3.0. Contains public sector information licensed under the Open Government Licence v3.0. See how prime London prices have moved since 2024: <a href="/prime-london-prices">Prime London prices per sq ft</a>.</p>
+         </div>
+ 
+         <div class="panel">
+           <h2>What the Valuation Office's computer model might miss</h2>
+           <p>The Valuation Office will value most homes with an automated model built on sales records and property data, checked by valuers rather than visits. It is most likely to go wrong where your home differs from the data:</p>
+           <ul class="rules">
+-            <li><b>Floor area.</b> Energy certificates are often wrong by 10% or more, or count space that isn't habitable. Measure your home and compare.</li>
++            <li><b>Floor area.</b> Recorded floor areas are often wrong by 10% or more, or count space that isn't habitable. Measure your home and compare.</li>
+             <li><b>Condition.</b> The model assumes average condition. Damp, dated kitchens and bathrooms, or structural problems in April 2026 all lower the value.</li>
+             <li><b>Position and outlook.</b> A busy road, railway, lack of light, overlooking, or no outside space rarely show up in the data.</li>
+             <li><b>Flats.</b> A short lease, a lower-ground or basement floor, no lift, or high service charges reduce value. Lease length is especially important under 80 years.</li>
+@@ -59,7 +59,7 @@
+           <ul class="rules">
+             <li>Write down what your home would have sold for in April 2026, and why.</li>
+             <li>Save the completed sales in this report, and look for others on your street or in your building from late 2025 to mid 2026.</li>
+-            <li>Measure the floor area, or get a measured floor plan, and keep your energy certificate.</li>
++            <li>Measure the floor area, or get a measured floor plan, and keep any documents that record it.</li>
+             <li>Take dated photos of anything that holds the value down: condition, damp, outlook, noise.</li>
+             <li>Note anything unusual: lease length, floor level, access, rights of way, planning restrictions, flood risk.</li>
+             <li>Keep receipts and dates for any building work, so you can show what the home was like in 2026.</li>
+diff --git a/site/sample-report.html b/site/sample-report.html
+index a4b2cb8..b0631e7 100644
+--- a/site/sample-report.html
++++ b/site/sample-report.html
+@@ -77,7 +77,7 @@
+             <div class="field"><label for="s-postcode">Postcode</label><input class="input" id="s-postcode" name="postcode" required autocomplete="postal-code" maxlength="10" pattern="[A-Za-z]{1,2}[0-9][A-Za-z0-9]? ?[0-9][A-Za-z]{2}" title="A full UK postcode, for example SW3 5RL"></div>
+             <div class="row2">
+               <div class="field"><label for="s-type">Property type</label><select class="input" id="s-type" name="type" required><option value="">Choose…</option><option value="F">Flat or maisonette</option><option value="T">Terraced house</option><option value="S">Semi-detached house</option><option value="D">Detached house</option></select></div>
+-              <div class="field"><label for="s-area">Floor area in sq ft (optional)</label><input class="input" id="s-area" name="area" inputmode="numeric" maxlength="6" placeholder="From your energy certificate"></div>
++              <div class="field"><label for="s-area">Floor area in sq ft (optional)</label><input class="input" id="s-area" name="area" inputmode="numeric" maxlength="6" placeholder="From a floor plan or sale particulars"></div>
+             </div>
+             <p class="hint" style="margin:0">Or <a href="/#checker">use the checker first</a>: it finds your home and its floor area for you.</p>
+           </div>
+diff --git a/site/terms.html b/site/terms.html
+index 873b0c8..ca48415 100644
+--- a/site/terms.html
++++ b/site/terms.html
+@@ -100,7 +100,7 @@
+       <p>Nothing in these terms excludes or restricts your legal rights as a consumer, or any liability that can't lawfully be excluded or restricted, including liability for fraud or for death or personal injury caused by negligence.</p>
+ 
+       <h2>11. Using our materials</h2>
+-      <p>Your Property Value Evidence Pack is for you to use for your own home, for the purpose in section 4. You can share it with your advisers, a valuer, the Valuation Office, your council or a tribunal for that purpose. Please don't share the sample pack or republish our reports. Sales data comes from HM Land Registry and energy performance certificates, under their licences.</p>
++      <p>Your Property Value Evidence Pack is for you to use for your own home, for the purpose in section 4. You can share it with your advisers, a valuer, the Valuation Office, your council or a tribunal for that purpose. Please don't share the sample pack or republish our reports. Sales data comes from HM Land Registry and other public records, used under their licences.</p>
+ 
+       <h2>12. Your information</h2>
+       <p>How we use your personal information is explained in our <a href="/privacy.html">privacy policy</a>.</p>
