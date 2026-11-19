@@ -131,3 +131,58 @@ address data, in headless Chromium. No real submissions were made.
 4. Not checked: MailerLite emails, ads, Notion. PDFs already sent keep the old wording.
 
 Publishing costs 15 Netlify credits, and rolling back is free.
+
+---
+
+# Follow-up (19 Nov 2026, later): items 3 and 4
+
+## Item 3: private data files: done on the preview (commit `b2fc912`)
+
+- **Edge gate.** A small edge function now answers "not found" for the checker's address and sales files and the
+  index file, unless the request comes from the site's own server functions. Those send a secret header derived
+  from `PACK_KEY`, or from `DATA_KEY` if you add one.
+- **Unchanged:** the chart files (London index, prime London trend), the monthly data workflow, and every estimate.
+- **Checked on the real deploy preview:**
+  - the data files return 404 and the chart files load;
+  - the checker address lookup and estimates work;
+  - the online report and the report PDF work;
+  - the owner's details form pre-fills;
+  - no JavaScript errors.
+- **Same estimates.** Results match `main` exactly (113 calls), and match exactly whether the data is read from
+  disk or through the gate (34 calls).
+- **Not working: the rate limit** on the checker (30 a minute per visitor). It is in the code, but Netlify didn't
+  enforce it on the preview: 100 requests in under a minute all went through. Check Netlify → Project → Security
+  (rate limiting), or ask Netlify support whether code-based rate limits apply to your plan or only to
+  production. Until then, someone could still collect the data slowly through the checker, one postcode at a time.
+- **Evidence Pack builder scripts.** Not changed, as recommended: low risk, and can be done later.
+- **Optional.** Add a separate `DATA_KEY` in Netlify (Functions scope), so that changing your reviewer key
+  doesn't also change the data key. It takes effect at the next deploy.
+
+## Item 4: emails, ads and Notion: audited (read-only)
+
+- **Clean:**
+  - all 7 MailerLite automations (live and off);
+  - both draft campaigns;
+  - the 3 Google Ads search ads;
+  - the local Meta and Google Ads files;
+  - reusable Gmail drafts.
+- **Fixed on the branch:** the order confirmation email template (`docs/order-confirmation-email.md`). It now
+  reads "a floor plan or any document that shows it" instead of "energy certificate".
+- **Not changed (your drafts, so your decision).** Notion page "Phase 2 drafts: areas, data story, outreach
+  (17 Nov 2026) — NOT SENT":
+  - The Negotiator pitch: "It would draw on Land Registry and EPC data…" → suggested: "It would draw on HM Land
+    Registry sales and available property records…"
+  - Data story caveat: "floor level from EPCs (about three-quarters of flat sales matched)" → suggested: "floor
+    level from available property records, which may not reflect each flat's current configuration". Also drop
+    the match rate, because it shows how sales are matched.
+- **Kept on purpose:**
+  - the draft council tax guide in `docs/`, which is DIY advice telling owners where public data is;
+  - an old email describing a third party's appeal.
+  Neither describes our method.
+- **Couldn't check:**
+  - live Meta ad text (no recent data in Windsor);
+  - Google Ads sitelinks and callouts (returned nothing);
+  - MailerLite landing pages (the call failed);
+  - the info@ mailbox;
+  - Notion beyond its top search results.
+  Check the first two by eye in Ads Manager and Google Ads.
