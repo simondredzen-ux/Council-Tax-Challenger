@@ -40,7 +40,7 @@ If the surcharge follows the council tax rule, lease length and ground rent woul
 **Direct competitors now exist and are being found:**
 - mansiontaxes.com: a £395 band check plus a 40% success fee.
 - Websters Surveyors: an RICS valuation from £850 + VAT.
-- Council Tax Challenger: a £9.99 evidence pack.
+- Council Tax Challenger: free mansion tax guides. (Correction, 19 Nov: its £9.99 evidence pack is for ordinary council tax bands, not the mansion tax.)
 - Search results are dominated by UK Property Accountants, the HomeOwners Alliance and the big agents' tax valuation pages (Savills, Knight Frank, John D Wood).
 - They appear because they are indexed, older and linked from other sites, not because their offer is better.
 
@@ -101,7 +101,7 @@ Each firm's price and service are as stated in search results about it; I couldn
 |---|---|---|---|
 | **mansiontaxes.com** ("Mansion Tax Valuation Reviews and Appeals") | Band check £395, credited against a success fee of 40% of the first two years' saving; says self-challenge is expected to be free | Unknown (not readable from here) | Exact-match name and domain; already indexed |
 | **Websters Surveyors** (London, RICS) | Mansion tax RICS valuation from £850 + VAT | RICS firm, existing London valuation pages | Established domain with years of history; dedicated /mansion-tax/ page |
-| **Council Tax Challenger** (counciltaxchallenger.co.uk) | £9.99 evidence pack; detailed guide "Challenge a Mansion Tax Valuation: Proposed Rules 2026" | Large council tax content base | Many indexed council tax pages and older domain |
+| **Council Tax Challenger** (counciltaxchallenger.co.uk) | Free mansion tax guides (its £9.99 evidence pack covers ordinary council tax bands, not the mansion tax; corrected 19 Nov); detailed guide "Challenge a Mansion Tax Valuation: Proposed Rules 2026" | Large council tax content base | Many indexed council tax pages and older domain |
 | **UK Property Accountants** | Advisory; mansion tax calculator, dedicated HVCTS pages, many articles | Accountancy firm | Appeared in 7 of the 10 tests; volume of indexed content and links |
 | **HomeOwners Alliance** | Guide plus a chartered surveyor directory | National consumer body, press citations | High authority; widely linked |
 | **Savills, Knight Frank, John D Wood, Chestertons, Carter Jonas, Allsop, Justin Mason** | Tax valuation services (Red Book) | RICS, brand, decades of links | Domain authority; AI tools default to "ask an RICS surveyor" |

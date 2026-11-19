@@ -23,7 +23,7 @@ Nothing has been published to the live site. Pull requests are on free Netlify p
   - council tax values flats as if they had a 99-year lease at a nominal rent.
 
   Replacement wording is proposed (audit sections A–D), awaiting Simon's decision.
-- Competitors: mansiontaxes.com (£395 + 40% success fee), Websters Surveyors (RICS from £850 + VAT), Council Tax Challenger (£9.99 pack). UK Property Accountants appeared in 7 of 10 searches.
+- Competitors: mansiontaxes.com (£395 + 40% success fee), Websters Surveyors (RICS from £850 + VAT), Council Tax Challenger (free mansion tax guides; its £9.99 pack is for ordinary council tax, not the mansion tax: corrected later on 19 Nov). UK Property Accountants appeared in 7 of 10 searches.
 - Correction to earlier sessions: Google Search Console and Bing were already set up on 8 Nov (Namecheap TXT record, sitemap submitted). The 17 Nov "set-up guide" repeated work already done. What's needed now is to check indexing results, not to set them up again.
 
 ## 3. "Who can help" wording (PR #26, audit action 4)
