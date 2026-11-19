@@ -1,0 +1,102 @@
+diff --git a/netlify/lib/personal-pdf.mjs b/netlify/lib/personal-pdf.mjs
+index 26e1a6a..8b6d05a 100644
+--- a/netlify/lib/personal-pdf.mjs
++++ b/netlify/lib/personal-pdf.mjs
+@@ -393,7 +393,7 @@ export async function reportPdf(r, links, when = new Date()) {
+   h2("What the Valuation Office's computer model might miss");
+   text("The Valuation Office will value most homes with an automated model built on sales records and property data, checked by valuers rather than visits. It is most likely to go wrong where your home differs from the data:", { size: 9.5 });
+   bullets([
+-    ["Floor area.", "Recorded floor areas are often wrong by 10% or more, or count space that isn't habitable. Measure your home and compare."],
++    ["Floor area.", "Floor areas are derived from available property records and may not reflect the property’s current configuration or exact measured area. Owners should verify the information before relying on it for valuation or appeal purposes. Measure your home and compare."],
+     ["Condition.", "The model assumes average condition. Damp, dated kitchens and bathrooms, or structural problems in April 2026 all lower the value."],
+     ["Position and outlook.", "A busy road, railway, lack of light, overlooking, or no outside space rarely show up in the data."],
+     ["Flats.", "A short lease, a lower-ground or basement floor, no lift, or high service charges reduce value. Lease length is especially important under 80 years."],
+diff --git a/netlify/lib/sample-pack.mjs b/netlify/lib/sample-pack.mjs
+index af773f5..460ec90 100644
+--- a/netlify/lib/sample-pack.mjs
++++ b/netlify/lib/sample-pack.mjs
+@@ -391,7 +391,7 @@ export async function samplePackPdf(d, when = new Date()) {
+   button(M + bw + 10, "Book a free consultation", "https://challengemansiontax.co.uk/consultation", false);
+   y -= 36;
+   text("Limitations. An indicative value for surcharge banding, based on a desktop review of comparable sales, using the comparison method RICS valuers use, at the working valuation date of April 2026. It relies on public records and the property details you supply, without an inspection, so your home's actual market value may differ. It is not an RICS Red Book valuation and must not be relied on for any other purpose. The Valuation Office determines the official band; the rates and rules are proposals and may change.", { size: 7.2, color: C.muted, after: 3 });
+-  text(`Page 4 sources: HM Land Registry Price Paid Data, retrieved ${d.built ? longDate(d.built) : "this month"}, completions to ${monthYear(d.data_to)}, © Crown copyright ${when.getFullYear()}; contains public sector information licensed under the Open Government Licence v3.0. Pages 1 and 2 are fictional and illustrative.`, { size: 7.2, color: C.muted, after: 0 });
++  text(`Page 4 sources: HM Land Registry Price Paid Data, retrieved ${d.built ? longDate(d.built) : "this month"}, completions to ${monthYear(d.data_to)}, © Crown copyright ${when.getFullYear()}; contains public sector information licensed under the Open Government Licence v3.0. Floor areas are derived from available property records and may not reflect the property’s current configuration or exact measured area. Owners should verify the information before relying on it for valuation or appeal purposes. Pages 1 and 2 are fictional and illustrative.`, { size: 7.2, color: C.muted, after: 0 });
+ 
+   doc.setTitle("Property Value Evidence Pack: personalised preview, Challenge Mansion Tax");
+   doc.setAuthor("Challenge Mansion Tax");
+diff --git a/site/assets/checker.js b/site/assets/checker.js
+index 6f7fc84..232bb2d 100644
+--- a/site/assets/checker.js
++++ b/site/assets/checker.js
+@@ -213,7 +213,7 @@
+     const sqm = body.unit === "sqm" ? body.area : body.area / SQFT;
+     const sqft = body.unit === "sqm" ? body.area * SQFT : body.area;
+     const fromEpc = epcArea && Math.abs(sqm - epcArea) < 1.5;
+-    return `<div class="stat"><b>${Math.round(sqft).toLocaleString("en-GB")} sq ft</b><span>${Math.round(sqm)} m² floor area, ${fromEpc ? "from available property records" : "as you entered it"} · <a href="#e-area" class="fix-area">wrong? change it</a></span></div>`;
++    return `<div class="stat"><b>${Math.round(sqft).toLocaleString("en-GB")} sq ft</b><span>${Math.round(sqm)} m² floor area, ${fromEpc ? "from available property records" : "as you entered it"} · <a href="#e-area" class="fix-area">wrong? change it</a></span>${fromEpc ? `<span class="hint" style="display:block;margin-top:4px">Floor areas are derived from available property records and may not reflect the property’s current configuration or exact measured area. Owners should verify the information before relying on it for valuation or appeal purposes.</span>` : ""}</div>`;
+   }
+   document.addEventListener("click", e => {
+     if (!e.target.closest(".fix-area")) return;
+diff --git a/site/assets/pack.js b/site/assets/pack.js
+index 8c3de94..9bca0f9 100644
+--- a/site/assets/pack.js
++++ b/site/assets/pack.js
+@@ -31,7 +31,7 @@
+   const weightLabel = w => (WEIGHTS.find(([v]) => v === String(w)) || [, `${w}`])[1];
+   // The case for a challenge, in words rather than percentages (the free preview uses the same scale).
+   const CASES = ["Strong case", "Worth considering", "Borderline", "Little support"];
+-  const SOURCES = { owner: "Owner statement", verified: "Verified", data: "Public data", missing: "To be confirmed" };
++  const SOURCES = { owner: "Owner statement", verified: "Verified (measured or documented)", data: "Recorded (property records)", missing: "To be confirmed" };
+   const monthYear = ym => { if (!ym) return ""; const [y, m] = ym.split("-").map(Number); return new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString("en-GB", { month: "short", year: "numeric", timeZone: "UTC" }); };
+   const today = () => new Date().toISOString().slice(0, 10);
+   const VALUATION_MONTH = "2026-04";
+@@ -479,13 +479,13 @@
+       <h2>3. Comparable sales</h2>
+       <p>${k.used.length} completed sale${k.used.length === 1 ? "" : "s"} of similar homes${S.area_label ? ` in ${esc(S.area_label)}` : ""}, from HM Land Registry, adjusted to April 2026 with a price index (in London, our own proprietary house price index; elsewhere, the UK House Price Index for the local authority). ${k.areaBased ? `Each is converted to price per square foot and applied to the subject's floor area of ${num(sub.area.v).toLocaleString("en-GB")} sq ft.` : "Without a floor area for every sale, indications use the adjusted sale prices."}</p>
+       <div class="tablewrap"><table>
+-        <thead><tr><th class="l">Address</th><th>Sold</th><th>Price</th><th>Size</th><th>Time adj.</th><th>Property adj.</th><th>Indicative Value for your home</th></tr></thead>
++        <thead><tr><th class="l">Address</th><th>Sold</th><th>Price</th><th>Recorded size</th><th>Time adj.</th><th>Property adj.</th><th>Indicative Value for your home</th></tr></thead>
+         <tbody>${k.used.map(u => `<tr><td class="l">${esc(u.c.address)}<br><span class="small">${esc(u.c.postcode)} · ${esc(u.c.tenure)}${u.c.floor ? " · " + esc(u.c.floor) : ""}${u.c.new_build ? " · new build" : ""}${u.c.date > VALUATION_MONTH ? " · sold after the valuation date" : ""}</span></td><td>${monthYear(u.c.date)}</td><td class="num">${gbp(u.c.price)}</td><td class="num">${u.c.area_sqft ? u.c.area_sqft.toLocaleString("en-GB") + " sq ft" : "–"}</td><td class="num">${timeAdj(u.c)}</td><td class="num">${num(u.c.adj) ? (num(u.c.adj) > 0 ? "+" : "−") + Math.abs(num(u.c.adj)) + "%" : "0%"}</td><td class="num">${gbp(u.value)}</td></tr>`).join("") || `<tr><td class="l" colspan="7">${gap("No comparables selected.")}</td></tr>`}</tbody>
+         ${mid != null ? `<tfoot><tr class="total"><td class="l" colspan="6"><b>Indicative Value for ${esc(sub.address.v || "your home")}</b><br><span class="small">Weighted towards the closest matches; the working is in sections 5 and 6</span></td><td class="num"><b>${gbp(mid)}</b></td></tr></tfoot>` : ""}
+       </table></div>
+       ${S.weight_note ? `<p><b>Weighting.</b> ${esc(S.weight_note)}</p>` : ""}
+       ${S.own_sale ? `<div class="note"><b>The home itself sold in ${monthYear(S.own_sale.date)} for ${gbp(S.own_sale.price)}</b>, about ${gbp(S.own_sale.price_2026)} at April 2026 prices. A recent arm's-length sale of the subject home is the strongest evidence of its value; explain any difference from the range below.</div>` : ""}
+-      <p class="small">Floor areas for comparables are derived from available property records and have not been independently measured. Recorded floor areas can be slightly smaller than an estate agent's gross internal area, so the subject home's area should be measured on a consistent basis. Time adj. is the change in the house price index between the month of each sale and April 2026, the valuation date proposed for the High Value Council Tax Surcharge. Property adj. allows for the differences between each sale and the subject home, explained in section 5. Indicative Value for your home = its floor area × each sale's adjusted £ per sq ft. Each sale's weight (High, Medium or Low) shows how much it counts towards the central figure, as explained in section 6.</p>
++      <p class="small"><b>Floor areas.</b> Floor areas are derived from available property records and may not reflect the property’s current configuration or exact measured area. Owners should verify the information before relying on it for valuation or appeal purposes. Recorded floor areas have not been independently measured. Different measurement standards (for example, gross internal area, net internal area or an estate agent’s figure) can give different results for the same home, which affects comparisons between properties, so the subject home’s floor area should be measured on the same basis as the comparables. Time adj. is the change in the house price index between the month of each sale and April 2026, the valuation date proposed for the High Value Council Tax Surcharge. Property adj. allows for the differences between each sale and the subject home, explained in section 5. Indicative Value for your home = its floor area × each sale's adjusted £ per sq ft. Each sale's weight (High, Medium or Low) shows how much it counts towards the central figure, as explained in section 6.</p>
+ 
+       <h2>4. Details of the comparable properties</h2>
+       <p>Each kept sale as its particulars showed it when it sold: a photograph, the floor plan, and what we noted. Sources are shown under each one.</p>
+@@ -504,7 +504,7 @@
+       <h2>5. Adjustments</h2>
+       <p>How each sale gets from its price to a figure for your home: market movement to the valuation date (time adj.), the adjustments for its differences from your home (property adj., below), and the weight it carries. Figures are calculated before rounding, so a row can differ by £1 from the rounded figures shown.</p>
+       <div class="tablewrap"><table>
+-        <thead><tr><th class="l">Address</th><th>Sold</th><th>Price</th><th>Time adj.</th><th>At Apr 2026</th><th>Size</th><th>£/sq ft</th><th>Property adj.</th><th>Adjusted £/sq ft</th><th>Indicative Value for your home</th></tr></thead>
++        <thead><tr><th class="l">Address</th><th>Sold</th><th>Price</th><th>Time adj.</th><th>At Apr 2026</th><th>Recorded size</th><th>£/sq ft</th><th>Property adj.</th><th>Adjusted £/sq ft</th><th>Indicative Value for your home</th></tr></thead>
+         <tbody>${k.used.map(u => `<tr><td class="l">${esc(u.c.address)}<br><span class="small">${esc(u.c.postcode)} · ${esc(u.c.tenure)}${u.c.floor ? " · " + esc(u.c.floor) : ""}${u.c.new_build ? " · new build" : ""} · weight ${weightLabel(u.c.weight)}${u.c.date > VALUATION_MONTH ? " · sold after the valuation date" : ""}</span></td><td>${monthYear(u.c.date)}</td><td class="num">${gbp(u.c.price)}</td><td class="num">${timeAdj(u.c)}</td><td class="num">${gbp(u.c.price_2026)}</td><td class="num">${u.c.area_sqft ? u.c.area_sqft.toLocaleString("en-GB") : "–"}</td><td class="num">${u.c.ppsf ? "£" + u.c.ppsf.toLocaleString("en-GB") : "–"}</td><td class="num">${num(u.c.adj) ? (num(u.c.adj) > 0 ? "+" : "") + num(u.c.adj) + "%" : "–"}</td><td class="num">${u.ppsfAdj ? "£" + Math.round(u.ppsfAdj).toLocaleString("en-GB") : "–"}</td><td class="num">${gbp(u.value)}</td></tr>`).join("") || `<tr><td class="l" colspan="10">${gap("No comparables selected.")}</td></tr>`}</tbody>
+         ${mid != null ? `<tfoot><tr class="total"><td class="l" colspan="8"><b>Indicative Value for ${esc(sub.address.v || "your home")}</b>${k.areaBased ? `<br><span class="small">Weighted average of the adjusted £ per sq ft above, × ${k.area.toLocaleString("en-GB")} sq ft</span>` : ""}</td><td class="num"><b>${k.areaBased ? "£" + Math.round(mid / k.area).toLocaleString("en-GB") : ""}</b></td><td class="num"><b>${gbp(mid)}</b></td></tr></tfoot>` : ""}
+       </table></div>
+diff --git a/site/order-details.html b/site/order-details.html
+index f0337fc..dbb62df 100644
+--- a/site/order-details.html
++++ b/site/order-details.html
+@@ -71,6 +71,7 @@
+ 
+         <div class="panel" id="d-epc" hidden style="padding:12px 14px">
+           <p style="margin:0"><b>Estimated floor area from available property records:</b> <span id="d-epc-text"></span></p>
++          <p class="hint" style="margin:6px 0 0">Floor areas are derived from available property records and may not reflect the property’s current configuration or exact measured area. Owners should verify the information before relying on it for valuation or appeal purposes.</p>
+           <p style="margin:6px 0 0"><button class="btn ghost small" type="button" id="d-epc-change">Change it</button></p>
+         </div>
+         <div class="stack" id="d-area-fields">
+diff --git a/site/report.html b/site/report.html
+index 380e539..1213d9c 100644
+--- a/site/report.html
++++ b/site/report.html
+@@ -45,7 +45,7 @@
+           <h2>What the Valuation Office's computer model might miss</h2>
+           <p>The Valuation Office will value most homes with an automated model built on sales records and property data, checked by valuers rather than visits. It is most likely to go wrong where your home differs from the data:</p>
+           <ul class="rules">
+-            <li><b>Floor area.</b> Recorded floor areas are often wrong by 10% or more, or count space that isn't habitable. Measure your home and compare.</li>
++            <li><b>Floor area.</b> Floor areas are derived from available property records and may not reflect the property’s current configuration or exact measured area. Owners should verify the information before relying on it for valuation or appeal purposes. Measure your home and compare.</li>
+             <li><b>Condition.</b> The model assumes average condition. Damp, dated kitchens and bathrooms, or structural problems in April 2026 all lower the value.</li>
+             <li><b>Position and outlook.</b> A busy road, railway, lack of light, overlooking, or no outside space rarely show up in the data.</li>
+             <li><b>Flats.</b> A short lease, a lower-ground or basement floor, no lift, or high service charges reduce value. Lease length is especially important under 80 years.</li>
